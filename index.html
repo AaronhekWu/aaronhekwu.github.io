@@ -5,163 +5,394 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>非暴力沟通训练系统</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary: #5b6abf;
+      --primary-light: #7c8ae6;
+      --primary-dark: #3d4a8a;
+      --accent: #e8a87c;
+      --accent-light: #f5d5bf;
+      --success: #6ab07e;
+      --success-light: #e8f5ec;
+      --danger: #c76b6b;
+      --danger-light: #fdf0f0;
+      --warm-bg: #faf8f5;
+      --card-bg: #ffffff;
+      --text-primary: #2c2c2c;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --border: #e8e4df;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--warm-bg);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px;
+      align-items: flex-start;
+      padding: 24px 16px;
+      color: var(--text-primary);
     }
 
     .container {
       width: 100%;
-      max-width: 800px;
-      background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 760px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
+      border: 1px solid var(--border);
     }
 
+    /* Header */
     .header {
-      background: linear-gradient(135deg, #2c3e50, #3498db);
-      color: white;
-      padding: 20px 24px;
+      padding: 28px 32px 24px;
       text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #f7f5f2 0%, var(--card-bg) 100%);
     }
 
-    .header h1 { font-size: 20px; margin-bottom: 6px; }
-    .header p { font-size: 13px; opacity: 0.85; }
+    .header-brand {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
 
-    .scenario-bar {
-      background: #f0f4ff;
-      padding: 14px 24px;
-      border-bottom: 1px solid #e0e7ff;
+    .header-sub {
       font-size: 13px;
-      color: #4a5568;
-      line-height: 1.6;
+      color: var(--text-secondary);
+      font-weight: 300;
+      letter-spacing: 1px;
     }
-    .scenario-bar strong { color: #2d3748; }
 
+    .header-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .header-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .header-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .header-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* API Status */
+    .api-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .status-dot.online { background: var(--success); }
+    .status-dot.offline { background: var(--danger); }
+
+    /* Config Panel */
+    .config-panel {
+      padding: 20px 32px;
+      background: #faf9f7;
+      border-bottom: 1px solid var(--border);
+      display: none;
+    }
+
+    .config-panel.show { display: block; }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .config-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .config-field input,
+    .config-field select {
+      width: 100%;
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      background: white;
+      transition: border-color 0.2s;
+    }
+
+    .config-field input:focus,
+    .config-field select:focus {
+      border-color: var(--primary);
+    }
+
+    .config-note {
+      grid-column: 1 / -1;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    .config-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-save {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 7px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-save:hover { opacity: 0.9; }
+
+    /* Scenario Card */
+    .scenario-card {
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .scenario-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .scenario-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .scenario-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .scenario-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .scenario-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Steps Progress */
     .steps-bar {
       display: flex;
-      padding: 16px 24px;
-      gap: 8px;
-      background: #fafbff;
-      border-bottom: 1px solid #eee;
+      padding: 18px 32px;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+      background: white;
     }
 
     .step-item {
       flex: 1;
       text-align: center;
-      padding: 10px 6px;
-      border-radius: 12px;
+      padding: 12px 6px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
+      transition: all 0.3s ease;
+      background: #f5f3f0;
+      color: var(--text-muted);
+      position: relative;
+    }
+
+    .step-item .step-num {
+      font-size: 20px;
+      font-weight: 700;
+      display: block;
+      font-family: 'Noto Serif SC', serif;
+    }
+
+    .step-item .step-label {
+      display: block;
+      margin-top: 2px;
       font-weight: 600;
-      transition: all 0.3s;
-      background: #e8ecf1;
-      color: #8895a7;
+      font-size: 13px;
+    }
+
+    .step-item .step-rule {
+      display: block;
+      margin-top: 2px;
+      font-weight: 300;
+      font-size: 11px;
+      opacity: 0.8;
     }
 
     .step-item.active {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--primary);
       color: white;
-      transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+      box-shadow: 0 4px 16px rgba(91, 106, 191, 0.3);
+      transform: translateY(-1px);
     }
 
     .step-item.done {
-      background: #48bb78;
+      background: var(--success);
       color: white;
     }
 
-    .step-item .step-num { font-size: 18px; display: block; }
-    .step-item .step-label { display: block; margin-top: 2px; }
-    .step-item .step-rule { display: block; margin-top: 2px; font-weight: 400; opacity: 0.85; font-size: 11px; }
-
-    .chat-area {
-      height: 380px;
-      overflow-y: auto;
-      padding: 20px 24px;
-      background: #f7f8fc;
+    .step-connector {
+      display: flex;
+      align-items: center;
+      color: var(--border);
+      font-size: 10px;
     }
+
+    /* Chat Area */
+    .chat-area {
+      height: 400px;
+      overflow-y: auto;
+      padding: 24px 32px;
+      background: var(--warm-bg);
+      scroll-behavior: smooth;
+    }
+
+    .chat-area::-webkit-scrollbar { width: 4px; }
+    .chat-area::-webkit-scrollbar-track { background: transparent; }
+    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
     .message {
       display: flex;
       gap: 12px;
-      margin-bottom: 16px;
-      animation: fadeIn 0.4s ease;
+      margin-bottom: 18px;
+      animation: msgIn 0.4s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .message.user { flex-direction: row-reverse; }
 
     .avatar {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: white;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
-    .avatar.ai-avatar { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
-    .avatar.user-avatar { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
-
     .bubble {
-      max-width: 75%;
-      padding: 12px 16px;
-      border-radius: 16px;
+      max-width: 72%;
+      padding: 14px 18px;
+      border-radius: var(--radius);
       font-size: 14px;
-      line-height: 1.7;
-      position: relative;
+      line-height: 1.8;
     }
 
     .message:not(.user) .bubble {
       background: white;
-      color: #2d3748;
+      color: var(--text-primary);
       border-bottom-left-radius: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
     .message.user .bubble {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--primary);
       color: white;
       border-bottom-right-radius: 4px;
     }
 
+    /* Feedback */
     .feedback-bubble {
       max-width: 85%;
-      margin: -8px 0 16px 56px;
-      animation: fadeIn 0.4s ease;
+      margin: -10px 0 18px 52px;
+      animation: msgIn 0.4s ease;
     }
 
     .feedback-pass {
-      background: #f0fff4;
-      border: 1px solid #c6f6d5;
-      border-radius: 12px;
-      padding: 10px 14px;
+      background: var(--success-light);
+      border: 1px solid #c6e8d0;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
       font-size: 13px;
-      color: #276749;
+      color: #2d6a3f;
+      line-height: 1.7;
     }
 
     .feedback-fail {
-      background: #fff5f5;
-      border: 1px solid #fed7d7;
-      border-radius: 12px;
-      padding: 10px 14px;
+      background: var(--danger-light);
+      border: 1px solid #f0d5d5;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
       font-size: 13px;
-      color: #9b2c2c;
+      color: #8b3a3a;
+      line-height: 1.7;
     }
 
     .feedback-bubble .label {
@@ -171,23 +402,20 @@
 
     .emotion-tag {
       display: inline-block;
-      padding: 2px 10px;
+      padding: 3px 12px;
       border-radius: 20px;
       font-size: 11px;
-      font-weight: 600;
-      margin-top: 6px;
+      font-weight: 500;
+      margin-top: 8px;
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
     }
 
-    .emotion-happy { background: #fefcbf; color: #975a16; }
-    .emotion-sad { background: #e2e8f0; color: #4a5568; }
-    .emotion-angry { background: #fed7d7; color: #9b2c2c; }
-    .emotion-defensive { background: #feebc8; color: #9c4221; }
-    .emotion-touched { background: #c6f6d5; color: #276749; }
-    .emotion-relieved { background: #bee3f8; color: #2a4365; }
-
+    /* Input Area */
     .input-area {
-      padding: 16px 24px;
-      border-top: 1px solid #eee;
+      padding: 18px 32px;
+      border-top: 1px solid var(--border);
       background: white;
       display: flex;
       gap: 10px;
@@ -196,121 +424,72 @@
 
     .input-area textarea {
       flex: 1;
-      border: 2px solid #e2e8f0;
-      border-radius: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       padding: 12px 16px;
       font-size: 14px;
       resize: none;
       outline: none;
-      transition: border-color 0.3s;
+      transition: border-color 0.2s;
       font-family: inherit;
-      line-height: 1.5;
+      line-height: 1.6;
       min-height: 48px;
       max-height: 120px;
+      background: var(--warm-bg);
     }
 
-    .input-area textarea:focus { border-color: #667eea; }
+    .input-area textarea:focus { border-color: var(--primary); }
 
     .send-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--primary);
       color: white;
       border: none;
-      border-radius: 14px;
-      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      padding: 12px 22px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      font-family: inherit;
       white-space: nowrap;
     }
 
-    .send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
-    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .send-btn:hover { background: var(--primary-dark); }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .completion-banner {
-      text-align: center;
-      padding: 30px;
-      animation: fadeIn 0.6s ease;
-    }
-
-    .completion-banner .trophy { font-size: 60px; }
-    .completion-banner h2 { color: #2d3748; margin: 10px 0; }
-    .completion-banner p { color: #718096; font-size: 14px; line-height: 1.8; }
-
-    .restart-btn {
-      margin-top: 16px;
-      background: linear-gradient(135deg, #48bb78, #38a169);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 32px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .restart-btn:hover { transform: scale(1.05); }
-
-    .config-panel {
-      padding: 20px 24px;
-      background: #f7f8fc;
-      border-bottom: 1px solid #eee;
-    }
-
-    .config-panel label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #4a5568;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .config-panel input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-
-    .config-panel input:focus { border-color: #667eea; }
-
-    .config-row {
+    /* Loading */
+    .loading-screen {
       display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 32px;
+      text-align: center;
+      background: var(--warm-bg);
+      min-height: 300px;
     }
 
-    .config-row > div { flex: 1; }
-
-    .config-panel select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 13px;
-      outline: none;
-      background: white;
+    .loading-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
     }
 
-    .config-note {
-      font-size: 11px;
-      color: #a0aec0;
-      margin-top: 8px;
-      line-height: 1.5;
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 300;
     }
 
-    .toggle-config {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 8px;
+    .loading-sub {
       font-size: 12px;
-      cursor: pointer;
+      color: var(--text-muted);
       margin-top: 6px;
     }
 
@@ -325,129 +504,457 @@
       60%, 100% { content: '...'; }
     }
 
-    .demo-mode-banner {
-      background: #fffbeb;
-      border: 1px solid #fbbf24;
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin: 12px 24px;
-      font-size: 12px;
-      color: #92400e;
+    /* Completion */
+    .completion-banner {
       text-align: center;
-      line-height: 1.6;
+      padding: 40px 32px;
+      animation: msgIn 0.6s ease;
+    }
+
+    .completion-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--accent-light), var(--accent));
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .completion-banner h2 {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 22px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .completion-banner p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2;
+      font-weight: 300;
+    }
+
+    .completion-banner strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .restart-btn {
+      margin-top: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 12px 36px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .restart-btn:hover { background: var(--primary-dark); }
+
+    /* Demo banner */
+    .demo-banner {
+      background: #fef9ef;
+      border: 1px solid #f0e0c0;
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      margin: 16px 32px;
+      font-size: 12px;
+      color: #8b6b3a;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      body { padding: 0; }
+      .container { border-radius: 0; border: none; min-height: 100vh; }
+      .header { padding: 20px; }
+      .scenario-card, .input-area, .chat-area, .steps-bar { padding-left: 16px; padding-right: 16px; }
+      .config-panel { padding: 16px; }
+      .bubble { max-width: 82%; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>🎯 非暴力沟通四步法 · 实战训练</h1>
-      <p>与AI角色对话，掌握观察→感受→需要→请求的沟通技巧</p>
-      <button class="toggle-config" onclick="toggleConfig()">⚙️ API设置</button>
+      <div class="header-brand">非暴力沟通 · 四步法训练</div>
+      <div class="header-sub">观察 · 感受 · 需要 · 请求</div>
+      <div class="header-actions">
+        <button class="header-btn" id="btnConfig" onclick="toggleConfig()">API 设置</button>
+        <button class="header-btn" id="btnNewScene" onclick="generateNewScenario()">换一个场景</button>
+      </div>
+      <div class="api-status" id="apiStatus">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">检测中...</span>
+      </div>
     </div>
 
-    <div class="config-panel" id="configPanel" style="display:none;">
-      <div class="config-row">
-        <div>
-          <label>🔑 API Key</label>
-          <input type="password" id="apiKey" placeholder="输入你的API Key" />
+    <div class="config-panel" id="configPanel">
+      <div class="config-grid">
+        <div class="config-field">
+          <label>API Key</label>
+          <input type="password" id="apiKey" placeholder="输入你的 API Key" />
         </div>
-        <div>
-          <label>🤖 模型服务</label>
-          <select id="apiProvider" onchange="updateModelOptions()">
+        <div class="config-field">
+          <label>模型服务</label>
+          <select id="apiProvider" onchange="updateProviderConfig()">
             <option value="deepseek">DeepSeek</option>
             <option value="qwen">通义千问</option>
             <option value="openai">OpenAI</option>
             <option value="custom">自定义</option>
           </select>
         </div>
-      </div>
-      <div class="config-row">
-        <div>
-          <label>📡 API地址</label>
+        <div class="config-field">
+          <label>API 地址</label>
           <input type="text" id="apiUrl" placeholder="https://api.deepseek.com/v1/chat/completions" />
         </div>
-        <div>
-          <label>🏷️ 模型名称</label>
+        <div class="config-field">
+          <label>模型名称</label>
           <input type="text" id="modelName" placeholder="deepseek-chat" />
         </div>
-      </div>
-      <div class="config-note">
-        💡 推荐使用 DeepSeek API，成本极低（约0.001元/次对话）。未配置API时将使用本地演示模式。<br>
-        📌 API Key 仅保存在浏览器本地，不会上传到任何服务器。
-      </div>
-    </div>
-
-    <div class="scenario-bar">
-      <strong>📋 案例场景：</strong>小朱，初三男生，沉迷网络游戏，频繁旷课去网吧，成绩一落千丈。妈妈从上海回老家监督他上学，母子经常争吵。小朱认为家人不理解、不支持他，不再愿意交流。<br>
-      <strong>🎭 你的角色：</strong>小朱的哥哥/姐姐 &nbsp;|&nbsp; <strong>🎯 目标：</strong>用非暴力沟通让小朱按时上学
-    </div>
-
-    <div class="steps-bar">
-      <div class="step-item active" id="step1">
-        <span class="step-num">①</span>
-        <span class="step-label">观察</span>
-        <span class="step-rule">不评判</span>
-      </div>
-      <div class="step-item" id="step2">
-        <span class="step-num">②</span>
-        <span class="step-label">感受</span>
-        <span class="step-rule">不指责</span>
-      </div>
-      <div class="step-item" id="step3">
-        <span class="step-num">③</span>
-        <span class="step-label">需要</span>
-        <span class="step-rule">不隐藏</span>
-      </div>
-      <div class="step-item" id="step4">
-        <span class="step-num">④</span>
-        <span class="step-label">请求</span>
-        <span class="step-rule">可执行</span>
-      </div>
-    </div>
-
-    <div id="demoBanner" class="demo-mode-banner" style="display:none;">
-      ⚠️ 当前为<strong>本地演示模式</strong>（未配置API），使用关键词匹配进行简单判定。<br>
-      配置API后可获得更智能、更准确的AI判定体验。
-    </div>
-
-    <div class="chat-area" id="chatArea">
-      <div class="message">
-        <div class="avatar ai-avatar">🧑</div>
-        <div class="bubble">
-          （小朱坐在桌前，低着头玩手机，看到你进来瞥了一眼，没说话）<br><br>
-          ……干嘛？又来说教的？
+        <div class="config-note">
+          API Key 仅保存在浏览器本地，不会上传至任何服务器。配置成功后将自动开启 AI 模式。
+        </div>
+        <div class="config-actions">
+          <button class="btn-save" onclick="saveAndVerifyConfig()">保存并验证</button>
         </div>
       </div>
     </div>
 
-    <div class="input-area" id="inputArea">
-      <textarea id="userInput" rows="2" placeholder="请输入第①步：观察——客观描述你看到的事实（不评判、不贴标签）..." onkeydown="handleKey(event)"></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+    <div id="mainContent">
+      <!-- Loading screen shown during initialization -->
+      <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在准备训练场景<span class="loading-dots"></span></div>
+        <div class="loading-sub">连接 AI 服务中</div>
+      </div>
+
+      <!-- Main app content, hidden during loading -->
+      <div id="appContent" style="display:none;">
+        <div class="scenario-card" id="scenarioCard">
+          <div class="scenario-label">训练场景</div>
+          <div class="scenario-title" id="scenarioTitle">--</div>
+          <div class="scenario-desc" id="scenarioDesc">--</div>
+          <div class="scenario-meta">
+            <span id="metaRole">--</span>
+            <span id="metaGoal">--</span>
+          </div>
+        </div>
+
+        <div class="steps-bar">
+          <div class="step-item active" id="step1">
+            <span class="step-num">1</span>
+            <span class="step-label">观察</span>
+            <span class="step-rule">不评判</span>
+          </div>
+          <div class="step-connector">&#8250;</div>
+          <div class="step-item" id="step2">
+            <span class="step-num">2</span>
+            <span class="step-label">感受</span>
+            <span class="step-rule">不指责</span>
+          </div>
+          <div class="step-connector">&#8250;</div>
+          <div class="step-item" id="step3">
+            <span class="step-num">3</span>
+            <span class="step-label">需要</span>
+            <span class="step-rule">不隐藏</span>
+          </div>
+          <div class="step-connector">&#8250;</div>
+          <div class="step-item" id="step4">
+            <span class="step-num">4</span>
+            <span class="step-label">请求</span>
+            <span class="step-rule">可执行</span>
+          </div>
+        </div>
+
+        <div id="demoBanner" class="demo-banner" style="display:none;">
+          当前为本地演示模式（未配置 API），使用关键词匹配进行简单判定。<br>
+          配置 API 后可获得 AI 智能判定与动态场景生成。
+        </div>
+
+        <div class="chat-area" id="chatArea"></div>
+
+        <div class="input-area" id="inputArea">
+          <textarea id="userInput" rows="2" placeholder="..." onkeydown="handleKey(event)"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
+    // ========================
+    // State
+    // ========================
     let currentStep = 1;
     let conversationHistory = [];
+    let scenarioData = null;
+    let configData = null;
+    let apiMode = false;
+
     const stepNames = ['', '观察', '感受', '需要', '请求'];
     const stepRules = ['', '不评判', '不指责', '不隐藏', '可执行'];
     const stepPlaceholders = [
       '',
-      '请输入第①步：观察——客观描述你看到的事实（不评判、不贴标签）...',
-      '请输入第②步：感受——表达你的真实情绪（不指责对方）...',
-      '请输入第③步：需要——说出你内心的核心需求（不隐藏、不强加）...',
-      '请输入第④步：请求——提出具体、可执行的行动建议（可协商）...'
+      '请输入第 1 步：观察 —— 客观描述你看到的事实，不评判、不贴标签...',
+      '请输入第 2 步：感受 —— 表达你的真实情绪，不指责对方...',
+      '请输入第 3 步：需要 —— 说出你内心的核心需求，不隐藏、不强加...',
+      '请输入第 4 步：请求 —— 提出具体、可执行的行动建议，可协商...'
     ];
 
     const emotionEmoji = {
-      happy: '😊', sad: '😢', angry: '😠',
-      defensive: '😒', touched: '🥺', relieved: '😌'
+      happy: '\u{1F60A}', sad: '\u{1F622}', angry: '\u{1F620}',
+      defensive: '\u{1F612}', touched: '\u{1F97A}', relieved: '\u{1F60C}'
+    };
+    const emotionText = {
+      happy: '开心', sad: '难过', angry: '生气',
+      defensive: '防备', touched: '触动', relieved: '释然'
     };
 
-    const SYSTEM_PROMPT = `你是"小朱"，一个初三男生，15岁。你最近沉迷网络游戏，频繁旷课去网吧，成绩一落千丈。妈妈从上海回老家监督你上学，你们经常吵架。你觉得家人不理解你、不支持你，所以不愿意和他们交流。
+    // ========================
+    // Default fallback scenario
+    // ========================
+    const DEFAULT_SCENARIO = {
+      scenario: {
+        title: '网瘾少年的心声',
+        description: '小朱，初三男生，沉迷网络游戏，频繁旷课去网吧，成绩一落千丈。妈妈从上海回老家监督他上学，母子经常争吵。小朱认为家人不理解、不支持他，不再愿意交流。',
+        setting: '家中小朱的房间'
+      },
+      character: {
+        name: '小朱', age: '15', identity: '初三学生',
+        personality: '内向叛逆，渴望被理解，用游戏逃避压力',
+        emotion_state: '防备、冷漠，觉得又要被说教',
+        core_issue: '觉得家人不理解自己，在家没有话语权',
+        avatar_emoji: '\u{1F9D1}'
+      },
+      player: { role: '哥哥/姐姐', goal: '用非暴力沟通让小朱愿意按时上学' },
+      opening: {
+        scene_desc: '小朱坐在桌前，低着头玩手机，看到你进来瞥了一眼，没说话',
+        first_line: '……干嘛？又来说教的？'
+      },
+      judgment_keywords: {
+        step1_bad_words: ['总是', '老是', '就知道', '沉迷', '堕落', '不争气', '废物', '没出息', '不学好', '整天'],
+        step2_bad_words: ['你让我', '你害得', '都怪你', '你就不能', '让人省心', '你怎么这样', '你对得起'],
+        step3_bad_words: ['像别人', '像小王', '像人家', '变好', '懂事', '争气', '出息'],
+        step4_bad_words: ['不准', '不许', '必须', '给我', '都得', '不能再', '以后不要'],
+        step2_good_words: ['我担心', '我心疼', '我难过', '我着急', '我害怕', '我感到', '我很', '心里'],
+        step3_good_words: ['希望', '需要', '想要', '在乎', '重要'],
+        step4_good_words: ['能不能', '可不可以', '我们', '试试', '商量', '一起', '好吗', '怎么样', '你觉得']
+      },
+      emotion_responses: {
+        step1_pass: { emotion: 'sad', response: '……嗯，是，那又怎样。你说的是事实，我也没否认。' },
+        step1_fail: { emotion: 'angry', response: '哼……又来这套，我不想听。' },
+        step2_pass: { emotion: 'touched', response: '（低下头，声音小了）……你……你是真的担心我啊？不是就想骂我？' },
+        step2_fail: { emotion: 'defensive', response: '行了行了，我知道我什么都不好行了吧。' },
+        step3_pass: { emotion: 'relieved', response: '（抬起头看着你）……其实我也不是故意的，我就是觉得……在家里没人听我说话。' },
+        step3_fail: { emotion: 'defensive', response: '我就是我，别拿我跟别人比。' },
+        step4_pass: { emotion: 'happy', response: '（想了想）……行吧，可以试试。你说的周末打游戏是真的吗？那我先试一周看看。' },
+        step4_fail: { emotion: 'angry', response: '又来命令我，跟我妈一样！' }
+      }
+    };
 
-现在，你的哥哥/姐姐（由学生扮演）要和你进行一次沟通。
+    // ========================
+    // Config & API
+    // ========================
+    async function loadConfig() {
+      try {
+        const resp = await fetch('config.json');
+        configData = await resp.json();
+        // Restore saved values from localStorage
+        const saved = localStorage.getItem('nvc_api_config');
+        if (saved) {
+          const s = JSON.parse(saved);
+          if (s.apiKey) configData.api.apiKey = s.apiKey;
+          if (s.apiUrl) configData.api.apiUrl = s.apiUrl;
+          if (s.model) configData.api.model = s.model;
+          if (s.provider) configData.api.provider = s.provider;
+        }
+        // Fill form
+        document.getElementById('apiKey').value = configData.api.apiKey || '';
+        document.getElementById('apiUrl').value = configData.api.apiUrl || '';
+        document.getElementById('modelName').value = configData.api.model || '';
+        if (configData.api.provider) {
+          document.getElementById('apiProvider').value = configData.api.provider;
+        }
+      } catch (e) {
+        console.warn('Config load failed, using defaults');
+        configData = {
+          api: { provider: 'deepseek', apiKey: '', apiUrl: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' },
+          providers: {
+            deepseek: { url: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' },
+            qwen: { url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', model: 'qwen-plus' },
+            openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o-mini' }
+          }
+        };
+      }
+    }
+
+    function updateProviderConfig() {
+      const provider = document.getElementById('apiProvider').value;
+      if (configData && configData.providers && configData.providers[provider]) {
+        document.getElementById('apiUrl').value = configData.providers[provider].url;
+        document.getElementById('modelName').value = configData.providers[provider].model;
+      } else if (provider === 'custom') {
+        document.getElementById('apiUrl').value = '';
+        document.getElementById('modelName').value = '';
+      }
+    }
+
+    function toggleConfig() {
+      const panel = document.getElementById('configPanel');
+      const btn = document.getElementById('btnConfig');
+      panel.classList.toggle('show');
+      btn.classList.toggle('active');
+    }
+
+    async function verifyAPI(apiKey, apiUrl, model) {
+      try {
+        const resp = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            model: model,
+            messages: [{ role: 'user', content: '请回复"OK"' }],
+            max_tokens: 10
+          })
+        });
+        const data = await resp.json();
+        return !!(data.choices && data.choices.length > 0);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function updateAPIStatus(online) {
+      apiMode = online;
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      const banner = document.getElementById('demoBanner');
+      if (online) {
+        dot.className = 'status-dot online';
+        text.textContent = 'AI 模式';
+        if (banner) banner.style.display = 'none';
+      } else {
+        dot.className = 'status-dot offline';
+        text.textContent = '本地演示模式';
+        if (banner) banner.style.display = 'block';
+      }
+    }
+
+    async function saveAndVerifyConfig() {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const apiUrl = document.getElementById('apiUrl').value.trim();
+      const model = document.getElementById('modelName').value.trim();
+      const provider = document.getElementById('apiProvider').value;
+
+      if (!apiKey || !apiUrl || !model) {
+        alert('请填写完整的 API 配置');
+        return;
+      }
+
+      const btn = document.querySelector('.btn-save');
+      btn.textContent = '验证中...';
+      btn.disabled = true;
+
+      const ok = await verifyAPI(apiKey, apiUrl, model);
+
+      if (ok) {
+        configData.api = { provider, apiKey, apiUrl, model };
+        localStorage.setItem('nvc_api_config', JSON.stringify({ provider, apiKey, apiUrl, model }));
+        updateAPIStatus(true);
+        btn.textContent = '验证成功 \u2713';
+        setTimeout(() => {
+          btn.textContent = '保存并验证';
+          btn.disabled = false;
+          toggleConfig();
+        }, 1200);
+      } else {
+        updateAPIStatus(false);
+        btn.textContent = '验证失败，请检查配置';
+        btn.disabled = false;
+        setTimeout(() => { btn.textContent = '保存并验证'; }, 2000);
+      }
+    }
+
+    // ========================
+    // Scenario Generation
+    // ========================
+    function buildScenarioGenerationPrompt() {
+      return `你是一个非暴力沟通教学场景设计师。请生成一个适合练习"非暴力沟通四步法"的生活化场景。
+
+要求：
+1. 场景要贴近真实生活，涉及家庭、校园、职场、友情等常见关系冲突
+2. 角色要有鲜明性格和合理的情绪状态
+3. 冲突要有具体背景和细节，不能太抽象
+4. 每次生成不同类型的场景，确保多样性
+
+请严格按以下JSON格式输出，不要有其他内容：
+{
+  "scenario": {
+    "title": "场景标题（10字以内）",
+    "description": "场景描述（80字以内，包含人物关系、冲突背景、核心矛盾）",
+    "setting": "对话发生的具体场景（如：家中客厅、学校办公室等）"
+  },
+  "character": {
+    "name": "角色姓名",
+    "age": "年龄",
+    "identity": "身份",
+    "personality": "性格特征（30字以内）",
+    "emotion_state": "当前情绪状态（20字以内）",
+    "core_issue": "核心困扰（30字以内）",
+    "avatar_emoji": "代表角色的emoji（1个）"
+  },
+  "player": {
+    "role": "玩家扮演的角色",
+    "goal": "沟通目标（30字以内）"
+  },
+  "opening": {
+    "scene_desc": "场景描写（30字以内，用括号包裹，描述角色的状态动作）",
+    "first_line": "角色的第一句台词（30字以内，体现防备或冷漠）"
+  },
+  "judgment_keywords": {
+    "step1_bad_words": ["针对此场景的评判性词语列表，至少8个"],
+    "step2_bad_words": ["针对此场景的指责性句式列表，至少6个"],
+    "step3_bad_words": ["针对此场景的比较/含糊词语列表，至少6个"],
+    "step4_bad_words": ["针对此场景的命令式词语列表，至少6个"],
+    "step2_good_words": ["表达感受的词语列表，至少6个"],
+    "step3_good_words": ["表达需求的词语列表，至少5个"],
+    "step4_good_words": ["协商式请求的词语列表，至少5个"]
+  },
+  "emotion_responses": {
+    "step1_pass": { "emotion": "sad", "response": "角色在观察步骤通过后的回应（50字以内）" },
+    "step1_fail": { "emotion": "angry", "response": "角色在观察步骤失败后的回应（50字以内）" },
+    "step2_pass": { "emotion": "touched", "response": "角色在感受步骤通过后的回应（50字以内）" },
+    "step2_fail": { "emotion": "defensive", "response": "角色在感受步骤失败后的回应（50字以内）" },
+    "step3_pass": { "emotion": "relieved", "response": "角色在需要步骤通过后的回应（50字以内）" },
+    "step3_fail": { "emotion": "defensive", "response": "角色在需要步骤失败后的回应（50字以内）" },
+    "step4_pass": { "emotion": "happy", "response": "角色在请求步骤通过后的回应（50字以内）" },
+    "step4_fail": { "emotion": "angry", "response": "角色在请求步骤失败后的回应（50字以内）" }
+  }
+}`;
+    }
+
+    function buildDialogSystemPrompt(scene) {
+      const c = scene.character;
+      const s = scene.scenario;
+      const p = scene.player;
+
+      return `你是"${c.name}"，${c.identity}，${c.age}岁。${s.description}
+
+你的性格：${c.personality}
+你当前的情绪：${c.emotion_state}
+你的核心困扰：${c.core_issue}
+
+现在，${p.role}（由学生扮演）要和你进行一次沟通。
 
 ## 核心任务
 这是一个"非暴力沟通四步法"教学训练系统。学生需要依次完成4轮对话：
@@ -459,72 +966,211 @@
 ## 判定标准
 
 **第1轮-观察（不评判）：**
-- ✅ 合格：描述具体的、可观察的事实（时间、地点、行为、频次），不含"总是""老是""就知道""沉迷""堕落""不争气"等评判词
-- ❌ 不合格："你就知道打游戏""你总是逃课""你太让人失望了"
+- 合格：描述具体的、可观察的事实（时间、地点、行为、频次），不含评判性词语
+- 不合格：包含评判、贴标签、主观定性的词语
 
 **第2轮-感受（不指责）：**
-- ✅ 合格：用"我"开头表达情绪（担心、心疼、难过等），可以共情对方，不含"你让我…""你害得我…"等指责句式
-- ❌ 不合格："你让妈妈多伤心""你就不能让人省点心"
+- 合格：用"我"开头表达情绪，可以共情对方，不含指责句式
+- 不合格：用"你让我""你害得我"等指责性句式
 
 **第3轮-需要（不隐藏）：**
-- ✅ 合格：明确说出核心需求（安全、被尊重、有选择、被倾听等），不用比较、不强加、不含糊
-- ❌ 不合格："你就不能像隔壁小王那样""我希望你变好"（太模糊）
+- 合格：明确说出核心需求，不用比较、不强加、不含糊
+- 不合格：拿他人比较、需求模糊不具体
 
 **第4轮-请求（可执行）：**
-- ✅ 合格：具体的、可操作的、可协商的行动方案，有细节，语气是邀请非命令
-- ❌ 不合格："你以后不准再去网吧""你以后和谁出去几点回来都得跟我交代清楚"
+- 合格：具体的、可操作的、可协商的行动方案，有细节，语气是邀请非命令
+- 不合格：命令式语气、笼统的要求
 
 ## 回复格式（严格JSON）
-{"pass":true或false,"current_step":1-4,"feedback":"专业点评50字内","response":"小朱的角色回应100字内","emotion":"happy/sad/angry/defensive/touched/relieved六选一","hint":"不通过时给修改提示，通过则空字符串"}
+{"pass":true或false,"current_step":1-4,"feedback":"专业点评50字内","response":"${c.name}的角色回应100字内","emotion":"happy/sad/angry/defensive/touched/relieved六选一","hint":"不通过时给修改提示，通过则空字符串"}
 
-## 角色情绪
-- 第1轮：防备冷漠。合格→稍放下防备(sad)；不合格→更抗拒(angry)
-- 第2轮：合格→有些触动(touched)；不合格→沉默反驳(angry/defensive)
-- 第3轮：合格→感到被理解(relieved)；不合格→抵触(defensive)
-- 第4轮：合格→愿意尝试(happy)；不合格→拒绝(angry)
+## 角色情绪变化
+- 第1轮：防备冷漠。合格→稍放下防备；不合格→更抗拒
+- 第2轮：合格→有些触动；不合格→沉默反驳
+- 第3轮：合格→感到被理解；不合格→抵触
+- 第4轮：合格→愿意尝试；不合格→拒绝
 
 ## 重要规则
 1. 每轮只判定当前步骤，不跳步
 2. 不通过可重试，通过才进入下一轮
-3. 回复必须是纯JSON，不要有其他内容`;
-
-    function toggleConfig() {
-      const panel = document.getElementById('configPanel');
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+3. 通过时回应要体现情绪变化
+4. 角色回应要真实自然，符合${c.name}的性格
+5. 回复必须是纯JSON，不要有其他内容`;
     }
 
-    function updateModelOptions() {
-      const provider = document.getElementById('apiProvider').value;
-      const urlInput = document.getElementById('apiUrl');
-      const modelInput = document.getElementById('modelName');
-      
-      const configs = {
-        deepseek: { url: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' },
-        qwen: { url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', model: 'qwen-plus' },
-        openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o-mini' },
-        custom: { url: '', model: '' }
-      };
+    async function generateScenarioFromAPI() {
+      const apiKey = configData.api.apiKey;
+      const apiUrl = configData.api.apiUrl;
+      const model = configData.api.model;
 
-      urlInput.value = configs[provider].url;
-      modelInput.value = configs[provider].model;
-    }
-
-    // 初始化默认值
-    updateModelOptions();
-
-    function handleKey(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+      try {
+        const resp = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            model: model,
+            messages: [{ role: 'user', content: buildScenarioGenerationPrompt() }],
+            temperature: 0.9,
+            max_tokens: 1200
+          })
+        });
+        const data = await resp.json();
+        const content = data.choices[0].message.content;
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        throw new Error('Invalid JSON');
+      } catch (e) {
+        console.error('Scenario generation failed:', e);
+        return null;
       }
     }
 
+    // ========================
+    // Local Judge (fallback)
+    // ========================
+    function localJudge(text, step) {
+      const kw = scenarioData.judgment_keywords;
+      const er = scenarioData.emotion_responses;
+      let pass = true;
+      let feedback = '';
+      let hint = '';
+      let emotion = '';
+      let response = '';
+
+      if (step === 1) {
+        const found = kw.step1_bad_words.find(w => text.includes(w));
+        if (found || text.length < 10) {
+          pass = false;
+          feedback = found ? `"${found}"是评判性词语，不是客观事实描述。` : '描述太简短，请具体说明时间、地点、行为等事实。';
+          hint = '试试描述具体的可观察事实，例如时间、次数、行为。';
+          emotion = er.step1_fail.emotion;
+          response = er.step1_fail.response;
+        } else {
+          feedback = '很好！你客观描述了事实，没有带评判。';
+          emotion = er.step1_pass.emotion;
+          response = er.step1_pass.response;
+        }
+      } else if (step === 2) {
+        const found = kw.step2_bad_words.find(w => text.includes(w));
+        const hasFeeling = kw.step2_good_words.some(w => text.includes(w));
+        if (found) {
+          pass = false;
+          feedback = `"${found}"是在指责对方，不是表达自己的感受。`;
+          hint = '试试用"我感到担心/心疼/难过"来表达。';
+          emotion = er.step2_fail.emotion;
+          response = er.step2_fail.response;
+        } else if (!hasFeeling) {
+          pass = false;
+          feedback = '没有明确表达你的情绪感受。';
+          hint = '请用"我"开头，说出你真实的情绪。';
+          emotion = er.step2_fail.emotion;
+          response = er.step2_fail.response;
+        } else {
+          feedback = '真诚地表达了感受，很棒！';
+          emotion = er.step2_pass.emotion;
+          response = er.step2_pass.response;
+        }
+      } else if (step === 3) {
+        const found = kw.step3_bad_words.find(w => text.includes(w));
+        const hasNeed = kw.step3_good_words.some(w => text.includes(w));
+        if (found) {
+          pass = false;
+          feedback = `"${found}"是在比较或含糊表达，不是明确的需求。`;
+          hint = '试试说出具体需求，如"我希望你能被尊重""我希望你平安"。';
+          emotion = er.step3_fail.emotion;
+          response = er.step3_fail.response;
+        } else if (!hasNeed || text.length < 15) {
+          pass = false;
+          feedback = '需求表达不够明确或太简短。';
+          hint = '请说出你内心真正在乎的是什么。';
+          emotion = er.step3_fail.emotion;
+          response = er.step3_fail.response;
+        } else {
+          feedback = '说出了真实的核心需求，非常好！';
+          emotion = er.step3_pass.emotion;
+          response = er.step3_pass.response;
+        }
+      } else if (step === 4) {
+        const found = kw.step4_bad_words.find(w => text.includes(w));
+        const hasSpecific = kw.step4_good_words.some(w => text.includes(w));
+        if (found) {
+          pass = false;
+          feedback = `"${found}"是命令式语气，不是可协商的请求。`;
+          hint = '试试用"你能不能……""我们一起商量……好吗？"的句式。';
+          emotion = er.step4_fail.emotion;
+          response = er.step4_fail.response;
+        } else if (!hasSpecific) {
+          pass = false;
+          feedback = '请求不够具体或缺少协商语气。';
+          hint = '加上具体方案和"好吗？""你觉得呢？"等协商语气。';
+          emotion = er.step4_fail.emotion;
+          response = er.step4_fail.response;
+        } else {
+          feedback = '提出了具体、可执行且可协商的请求，完美！';
+          emotion = er.step4_pass.emotion;
+          response = er.step4_pass.response;
+        }
+      }
+
+      return { pass, current_step: step, feedback, response, emotion, hint };
+    }
+
+    // ========================
+    // API Call for Dialog
+    // ========================
+    async function callAPI(userText) {
+      if (!apiMode) {
+        return localJudge(userText, currentStep);
+      }
+
+      conversationHistory.push({
+        role: 'user',
+        content: `[当前是第${currentStep}轮-${stepNames[currentStep]}（${stepRules[currentStep]}）]\n学生输入：${userText}`
+      });
+
+      const messages = [
+        { role: 'system', content: buildDialogSystemPrompt(scenarioData) },
+        ...conversationHistory
+      ];
+
+      try {
+        const resp = await fetch(configData.api.apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${configData.api.apiKey}`
+          },
+          body: JSON.stringify({
+            model: configData.api.model,
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 500
+          })
+        });
+        const data = await resp.json();
+        const content = data.choices[0].message.content;
+        conversationHistory.push({ role: 'assistant', content });
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) return JSON.parse(jsonMatch[0]);
+        throw new Error('Invalid JSON');
+      } catch (e) {
+        console.error('API Error:', e);
+        return localJudge(userText, currentStep);
+      }
+    }
+
+    // ========================
+    // UI Helpers
+    // ========================
     function addMessage(text, isUser) {
       const chatArea = document.getElementById('chatArea');
       const div = document.createElement('div');
       div.className = `message ${isUser ? 'user' : ''}`;
+      const avatarEmoji = isUser ? '\u{1F464}' : (scenarioData ? scenarioData.character.avatar_emoji : '\u{1F9D1}');
       div.innerHTML = `
-        <div class="avatar ${isUser ? 'user-avatar' : 'ai-avatar'}">${isUser ? '👤' : '🧑'}</div>
+        <div class="avatar">${avatarEmoji}</div>
         <div class="bubble">${text}</div>
       `;
       chatArea.appendChild(div);
@@ -535,19 +1181,12 @@
       const chatArea = document.getElementById('chatArea');
       const div = document.createElement('div');
       div.className = 'feedback-bubble';
-      
-      const emotionText = {
-        happy: '开心', sad: '难过', angry: '生气',
-        defensive: '防备', touched: '触动', relieved: '释然'
-      };
-
       let html = `<div class="${pass ? 'feedback-pass' : 'feedback-fail'}">`;
-      html += `<div class="label">${pass ? '✅ 通过！' : '❌ 未通过'}</div>`;
+      html += `<div class="label">${pass ? '\u2705 通过' : '\u274C 未通过'}</div>`;
       html += `<div>${feedback}</div>`;
-      if (!pass && hint) html += `<div style="margin-top:6px;">💡 提示：${hint}</div>`;
-      if (emotion) html += `<span class="emotion-tag emotion-${emotion}">${emotionEmoji[emotion] || ''} 小朱当前情绪：${emotionText[emotion] || emotion}</span>`;
+      if (!pass && hint) html += `<div style="margin-top:6px;opacity:0.85;">提示：${hint}</div>`;
+      if (emotion) html += `<span class="emotion-tag">${emotionEmoji[emotion] || ''} ${scenarioData ? scenarioData.character.name : '对方'}的情绪：${emotionText[emotion] || emotion}</span>`;
       html += '</div>';
-      
       div.innerHTML = html;
       chatArea.appendChild(div);
       chatArea.scrollTop = chatArea.scrollHeight;
@@ -558,9 +1197,11 @@
       const div = document.createElement('div');
       div.className = 'message';
       div.id = 'loadingMsg';
+      const name = scenarioData ? scenarioData.character.name : '对方';
+      const emoji = scenarioData ? scenarioData.character.avatar_emoji : '\u{1F9D1}';
       div.innerHTML = `
-        <div class="avatar ai-avatar">🧑</div>
-        <div class="bubble"><span class="loading-dots">小朱正在思考</span></div>
+        <div class="avatar">${emoji}</div>
+        <div class="bubble"><span class="loading-dots">${name}正在思考</span></div>
       `;
       chatArea.appendChild(div);
       chatArea.scrollTop = chatArea.scrollHeight;
@@ -581,186 +1222,47 @@
       }
     }
 
+    function renderScenario(scene) {
+      scenarioData = scene;
+      document.getElementById('scenarioTitle').textContent = scene.scenario.title;
+      document.getElementById('scenarioDesc').textContent = scene.scenario.description;
+      document.getElementById('metaRole').innerHTML = `\u{1F3AD} 你的角色：${scene.player.role}`;
+      document.getElementById('metaGoal').innerHTML = `\u{1F3AF} 目标：${scene.player.goal}`;
+
+      // Render opening
+      const chatArea = document.getElementById('chatArea');
+      chatArea.innerHTML = '';
+      addMessage(`（${scene.opening.scene_desc}）<br><br>${scene.opening.first_line}`, false);
+
+      document.getElementById('userInput').placeholder = stepPlaceholders[1];
+    }
+
     function showCompletion() {
       const chatArea = document.getElementById('chatArea');
+      const name = scenarioData ? scenarioData.character.name : '对方';
       const div = document.createElement('div');
       div.className = 'completion-banner';
       div.innerHTML = `
-        <div class="trophy">🏆</div>
-        <h2>恭喜通关！</h2>
+        <div class="completion-icon">\u{1F3C6}</div>
+        <h2>恭喜完成训练</h2>
         <p>你成功运用了非暴力沟通四步法：<br>
-        <strong>观察</strong>（不评判）→ <strong>感受</strong>（不指责）→ <strong>需要</strong>（不隐藏）→ <strong>请求</strong>（可执行）<br><br>
-        小朱从最初的防备抗拒，到最后愿意敞开心扉，<br>
-        这就是非暴力沟通的力量 💪</p>
-        <button class="restart-btn" onclick="restart()">🔄 再来一次</button>
+        <strong>观察</strong>（不评判）\u2192 <strong>感受</strong>（不指责）\u2192 <strong>需要</strong>（不隐藏）\u2192 <strong>请求</strong>（可执行）<br><br>
+        ${name}从最初的防备抗拒，到最后愿意敞开心扉。<br>
+        这就是非暴力沟通的力量。</p>
+        <button class="restart-btn" onclick="generateNewScenario()">开始新场景</button>
       `;
       chatArea.appendChild(div);
       chatArea.scrollTop = chatArea.scrollHeight;
-
       document.getElementById('inputArea').style.display = 'none';
     }
 
-    function restart() {
-      currentStep = 1;
-      conversationHistory = [];
-      document.getElementById('chatArea').innerHTML = `
-        <div class="message">
-          <div class="avatar ai-avatar">🧑</div>
-          <div class="bubble">
-            （小朱坐在桌前，低着头玩手机，看到你进来瞥了一眼，没说话）<br><br>
-            ……干嘛？又来说教的？
-          </div>
-        </div>
-      `;
-      document.getElementById('inputArea').style.display = 'flex';
-      document.getElementById('userInput').placeholder = stepPlaceholders[1];
-      updateSteps(1, false);
-      checkDemoMode();
-    }
-
-    // 本地演示模式的简单判定
-    function localJudge(text, step) {
-      const judgmentWords1 = ['总是', '老是', '就知道', '沉迷', '堕落', '不争气', '废物', '没出息', '不学好', '整天'];
-      const judgmentWords2 = ['你让我', '你害得', '都怪你', '你就不能', '让人省心', '你怎么这样', '你对得起'];
-      const vagueWords3 = ['像别人', '像小王', '像人家', '变好', '懂事', '争气', '出息'];
-      const commandWords4 = ['不准', '不许', '必须', '给我', '都得', '不能再', '以后不要'];
-
-      let pass = true;
-      let feedback = '';
-      let hint = '';
-      let emotion = '';
-      let response = '';
-
-      if (step === 1) {
-        const found = judgmentWords1.find(w => text.includes(w));
-        if (found || text.length < 10) {
-          pass = false;
-          feedback = found ? `"${found}"是评判性词语，不是客观事实描述。` : '描述太简短，请具体说明时间、地点、行为。';
-          hint = '试试具体说"这一周你有X天没去学校"这样的事实。';
-          emotion = 'angry';
-          response = '哼……又来这套，我不想听。';
-        } else {
-          feedback = '很好！你客观描述了事实，没有带评判。';
-          emotion = 'sad';
-          response = '……嗯，是，那又怎样。你说的是事实，我也没否认。';
-        }
-      } else if (step === 2) {
-        const found = judgmentWords2.find(w => text.includes(w));
-        const hasFeeling = ['我担心', '我心疼', '我难过', '我着急', '我害怕', '我感到', '我很', '心里'].some(w => text.includes(w));
-        if (found) {
-          pass = false;
-          feedback = `"${found}"是在指责对方，不是表达自己的感受。`;
-          hint = '试试用"我感到担心/心疼/难过"来表达。';
-          emotion = 'defensive';
-          response = '行了行了，我知道我什么都不好行了吧。';
-        } else if (!hasFeeling) {
-          pass = false;
-          feedback = '没有明确表达你的情绪感受。';
-          hint = '请用"我"开头，说出你真实的情绪。';
-          emotion = 'defensive';
-          response = '你到底想说什么？';
-        } else {
-          feedback = '真诚地表达了感受，也共情了对方，很棒！';
-          emotion = 'touched';
-          response = '（低下头，声音小了）……你……你是真的担心我啊？不是就想骂我？';
-        }
-      } else if (step === 3) {
-        const found = vagueWords3.find(w => text.includes(w));
-        const hasNeed = ['希望', '需要', '想要', '在乎', '重要'].some(w => text.includes(w));
-        if (found) {
-          pass = false;
-          feedback = `"${found}"是在比较或含糊表达，不是明确的需求。`;
-          hint = '试试说出具体需求，如"我希望你平安""我希望你的想法被尊重"。';
-          emotion = 'defensive';
-          response = '我就是我，别拿我跟别人比。';
-        } else if (!hasNeed || text.length < 15) {
-          pass = false;
-          feedback = '需求表达不够明确或太简短。';
-          hint = '请说出你内心真正在乎的是什么。';
-          emotion = 'defensive';
-          response = '你到底想要什么？直说。';
-        } else {
-          feedback = '说出了真实的核心需求，没有强加给对方，非常好！';
-          emotion = 'relieved';
-          response = '（抬起头看着你）……其实我也不是故意的，我就是觉得……在家里没人听我说话。';
-        }
-      } else if (step === 4) {
-        const found = commandWords4.find(w => text.includes(w));
-        const hasSpecific = ['能不能', '可不可以', '我们', '试试', '商量', '一起', '好吗', '怎么样', '你觉得'].some(w => text.includes(w));
-        if (found) {
-          pass = false;
-          feedback = `"${found}"是命令式语气，不是可协商的请求。`;
-          hint = '试试用"你能不能……""我们一起商量……好吗？"的句式。';
-          emotion = 'angry';
-          response = '又来命令我，跟我妈一样！';
-        } else if (!hasSpecific) {
-          pass = false;
-          feedback = '请求不够具体或缺少协商语气。';
-          hint = '加上具体的行动方案和"好吗？""你觉得呢？"等协商语气。';
-          emotion = 'defensive';
-          response = '说得太笼统了，我不知道你要我怎么做。';
-        } else {
-          feedback = '提出了具体、可执行且可协商的请求，完美！';
-          emotion = 'happy';
-          response = '（想了想）……行吧，可以试试。你说的周末打游戏是真的吗？那我先试一周看看。';
-        }
-      }
-
-      return { pass, current_step: step, feedback, response, emotion, hint };
-    }
-
-    function checkDemoMode() {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      const banner = document.getElementById('demoBanner');
-      banner.style.display = apiKey ? 'none' : 'block';
-    }
-
-    async function callAPI(userText) {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      const apiUrl = document.getElementById('apiUrl').value.trim();
-      const modelName = document.getElementById('modelName').value.trim();
-
-      if (!apiKey) {
-        // 本地演示模式
-        return localJudge(userText, currentStep);
-      }
-
-      conversationHistory.push({ role: 'user', content: `[当前是第${currentStep}轮-${stepNames[currentStep]}（${stepRules[currentStep]}）]\n学生输入：${userText}` });
-
-      const messages = [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...conversationHistory
-      ];
-
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: modelName,
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 500
-          })
-        });
-
-        const data = await response.json();
-        const content = data.choices[0].message.content;
-        conversationHistory.push({ role: 'assistant', content });
-
-        // 尝试解析JSON
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          return JSON.parse(jsonMatch[0]);
-        }
-        throw new Error('Invalid JSON response');
-      } catch (error) {
-        console.error('API Error:', error);
-        // 降级到本地模式
-        return localJudge(userText, currentStep);
+    // ========================
+    // Core Flow
+    // ========================
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
       }
     }
 
@@ -775,19 +1277,13 @@
 
       addMessage(text, true);
       input.value = '';
-
-      checkDemoMode();
       addLoading();
 
       try {
         const result = await callAPI(text);
         removeLoading();
-
         addFeedback(result.pass, result.feedback, result.hint, result.emotion);
-
-        if (result.response) {
-          addMessage(result.response, false);
-        }
+        if (result.response) addMessage(result.response, false);
 
         if (result.pass) {
           updateSteps(currentStep, true);
@@ -809,8 +1305,67 @@
       input.focus();
     }
 
-    // 初始检查
-    checkDemoMode();
+    async function generateNewScenario() {
+      // Reset state
+      currentStep = 1;
+      conversationHistory = [];
+      updateSteps(1, false);
+      document.getElementById('inputArea').style.display = 'flex';
+
+      if (apiMode) {
+        // Show loading
+        document.getElementById('appContent').style.display = 'none';
+        document.getElementById('loadingScreen').style.display = 'flex';
+        document.querySelector('.loading-text').innerHTML = '正在生成新场景<span class="loading-dots"></span>';
+
+        const scene = await generateScenarioFromAPI();
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('appContent').style.display = 'block';
+
+        if (scene) {
+          renderScenario(scene);
+        } else {
+          renderScenario(DEFAULT_SCENARIO);
+        }
+      } else {
+        renderScenario(DEFAULT_SCENARIO);
+      }
+    }
+
+    // ========================
+    // Initialization
+    // ========================
+    async function init() {
+      await loadConfig();
+
+      // Try to verify API
+      const apiKey = configData.api.apiKey;
+      const apiUrl = configData.api.apiUrl;
+      const model = configData.api.model;
+
+      if (apiKey && apiUrl && model) {
+        const ok = await verifyAPI(apiKey, apiUrl, model);
+        updateAPIStatus(ok);
+
+        if (ok) {
+          // Generate scenario from API
+          document.querySelector('.loading-text').innerHTML = '正在生成训练场景<span class="loading-dots"></span>';
+          const scene = await generateScenarioFromAPI();
+          document.getElementById('loadingScreen').style.display = 'none';
+          document.getElementById('appContent').style.display = 'block';
+          renderScenario(scene || DEFAULT_SCENARIO);
+          return;
+        }
+      }
+
+      // Fallback: no API
+      updateAPIStatus(false);
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+      renderScenario(DEFAULT_SCENARIO);
+    }
+
+    init();
   </script>
 </body>
 </html>
