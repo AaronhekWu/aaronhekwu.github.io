@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>非暴力沟通训练系统</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      color: white;
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .header h1 { font-size: 20px; margin-bottom: 6px; }
+    .header p { font-size: 13px; opacity: 0.85; }
+
+    .scenario-bar {
+      background: #f0f4ff;
+      padding: 14px 24px;
+      border-bottom: 1px solid #e0e7ff;
+      font-size: 13px;
+      color: #4a5568;
+      line-height: 1.6;
+    }
+    .scenario-bar strong { color: #2d3748; }
+
+    .steps-bar {
+      display: flex;
+      padding: 16px 24px;
+      gap: 8px;
+      background: #fafbff;
+      border-bottom: 1px solid #eee;
+    }
+
+    .step-item {
+      flex: 1;
+      text-align: center;
+      padding: 10px 6px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+      background: #e8ecf1;
+      color: #8895a7;
+    }
+
+    .step-item.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+    }
+
+    .step-item.done {
+      background: #48bb78;
+      color: white;
+    }
+
+    .step-item .step-num { font-size: 18px; display: block; }
+    .step-item .step-label { display: block; margin-top: 2px; }
+    .step-item .step-rule { display: block; margin-top: 2px; font-weight: 400; opacity: 0.85; font-size: 11px; }
+
+    .chat-area {
+      height: 380px;
+      overflow-y: auto;
+      padding: 20px 24px;
+      background: #f7f8fc;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user { flex-direction: row-reverse; }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .avatar.ai-avatar { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+    .avatar.user-avatar { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+
+    .bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .message:not(.user) .bubble {
+      background: white;
+      color: #2d3748;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .message.user .bubble {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .feedback-bubble {
+      max-width: 85%;
+      margin: -8px 0 16px 56px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .feedback-pass {
+      background: #f0fff4;
+      border: 1px solid #c6f6d5;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #276749;
+    }
+
+    .feedback-fail {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #9b2c2c;
+    }
+
+    .feedback-bubble .label {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .emotion-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    .emotion-happy { background: #fefcbf; color: #975a16; }
+    .emotion-sad { background: #e2e8f0; color: #4a5568; }
+    .emotion-angry { background: #fed7d7; color: #9b2c2c; }
+    .emotion-defensive { background: #feebc8; color: #9c4221; }
+    .emotion-touched { background: #c6f6d5; color: #276749; }
+    .emotion-relieved { background: #bee3f8; color: #2a4365; }
+
+    .input-area {
+      padding: 16px 24px;
+      border-top: 1px solid #eee;
+      background: white;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .input-area textarea {
+      flex: 1;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s;
+      font-family: inherit;
+      line-height: 1.5;
+      min-height: 48px;
+      max-height: 120px;
+    }
+
+    .input-area textarea:focus { border-color: #667eea; }
+
+    .send-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(102,126,234,0.4); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .completion-banner {
+      text-align: center;
+      padding: 30px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .completion-banner .trophy { font-size: 60px; }
+    .completion-banner h2 { color: #2d3748; margin: 10px 0; }
+    .completion-banner p { color: #718096; font-size: 14px; line-height: 1.8; }
+
+    .restart-btn {
+      margin-top: 16px;
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .restart-btn:hover { transform: scale(1.05); }
+
+    .config-panel {
+      padding: 20px 24px;
+      background: #f7f8fc;
+      border-bottom: 1px solid #eee;
+    }
+
+    .config-panel label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .config-panel input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .config-panel input:focus { border-color: #667eea; }
+
+    .config-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .config-row > div { flex: 1; }
+
+    .config-panel select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+
+    .config-note {
+      font-size: 11px;
+      color: #a0aec0;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .toggle-config {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .demo-mode-banner {
+      background: #fffbeb;
+      border: 1px solid #fbbf24;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 12px 24px;
+      font-size: 12px;
+      color: #92400e;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 非暴力沟通四步法 · 实战训练</h1>
+      <p>与AI角色对话，掌握观察→感受→需要→请求的沟通技巧</p>
+      <button class="toggle-config" onclick="toggleConfig()">⚙️ API设置</button>
+    </div>
+
+    <div class="config-panel" id="configPanel" style="display:none;">
+      <div class="config-row">
+        <div>
+          <label>🔑 API Key</label>
+          <input type="password" id="apiKey" placeholder="输入你的API Key" />
+        </div>
+        <div>
+          <label>🤖 模型服务</label>
+          <select id="apiProvider" onchange="updateModelOptions()">
+            <option value="deepseek">DeepSeek</option>
+            <option value="qwen">通义千问</option>
+            <option value="openai">OpenAI</option>
+            <option value="custom">自定义</option>
+          </select>
+        </div>
+      </div>
+      <div class="config-row">
+        <div>
+          <label>📡 API地址</label>
+          <input type="text" id="apiUrl" placeholder="https://api.deepseek.com/v1/chat/completions" />
+        </div>
+        <div>
+          <label>🏷️ 模型名称</label>
+          <input type="text" id="modelName" placeholder="deepseek-chat" />
+        </div>
+      </div>
+      <div class="config-note">
+        💡 推荐使用 DeepSeek API，成本极低（约0.001元/次对话）。未配置API时将使用本地演示模式。<br>
+        📌 API Key 仅保存在浏览器本地，不会上传到任何服务器。
+      </div>
+    </div>
+
+    <div class="scenario-bar">
+      <strong>📋 案例场景：</strong>小朱，初三男生，沉迷网络游戏，频繁旷课去网吧，成绩一落千丈。妈妈从上海回老家监督他上学，母子经常争吵。小朱认为家人不理解、不支持他，不再愿意交流。<br>
+      <strong>🎭 你的角色：</strong>小朱的哥哥/姐姐 &nbsp;|&nbsp; <strong>🎯 目标：</strong>用非暴力沟通让小朱按时上学
+    </div>
+
+    <div class="steps-bar">
+      <div class="step-item active" id="step1">
+        <span class="step-num">①</span>
+        <span class="step-label">观察</span>
+        <span class="step-rule">不评判</span>
+      </div>
+      <div class="step-item" id="step2">
+        <span class="step-num">②</span>
+        <span class="step-label">感受</span>
+        <span class="step-rule">不指责</span>
+      </div>
+      <div class="step-item" id="step3">
+        <span class="step-num">③</span>
+        <span class="step-label">需要</span>
+        <span class="step-rule">不隐藏</span>
+      </div>
+      <div class="step-item" id="step4">
+        <span class="step-num">④</span>
+        <span class="step-label">请求</span>
+        <span class="step-rule">可执行</span>
+      </div>
+    </div>
+
+    <div id="demoBanner" class="demo-mode-banner" style="display:none;">
+      ⚠️ 当前为<strong>本地演示模式</strong>（未配置API），使用关键词匹配进行简单判定。<br>
+      配置API后可获得更智能、更准确的AI判定体验。
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <div class="message">
+        <div class="avatar ai-avatar">🧑</div>
+        <div class="bubble">
+          （小朱坐在桌前，低着头玩手机，看到你进来瞥了一眼，没说话）<br><br>
+          ……干嘛？又来说教的？
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area" id="inputArea">
+      <textarea id="userInput" rows="2" placeholder="请输入第①步：观察——客观描述你看到的事实（不评判、不贴标签）..." onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    let conversationHistory = [];
+    const stepNames = ['', '观察', '感受', '需要', '请求'];
+    const stepRules = ['', '不评判', '不指责', '不隐藏', '可执行'];
+    const stepPlaceholders = [
+      '',
+      '请输入第①步：观察——客观描述你看到的事实（不评判、不贴标签）...',
+      '请输入第②步：感受——表达你的真实情绪（不指责对方）...',
+      '请输入第③步：需要——说出你内心的核心需求（不隐藏、不强加）...',
+      '请输入第④步：请求——提出具体、可执行的行动建议（可协商）...'
+    ];
+
+    const emotionEmoji = {
+      happy: '😊', sad: '😢', angry: '😠',
+      defensive: '😒', touched: '🥺', relieved: '😌'
+    };
+
+    const SYSTEM_PROMPT = `你是"小朱"，一个初三男生，15岁。你最近沉迷网络游戏，频繁旷课去网吧，成绩一落千丈。妈妈从上海回老家监督你上学，你们经常吵架。你觉得家人不理解你、不支持你，所以不愿意和他们交流。
+
+现在，你的哥哥/姐姐（由学生扮演）要和你进行一次沟通。
+
+## 核心任务
+这是一个"非暴力沟通四步法"教学训练系统。学生需要依次完成4轮对话：
+- 第1轮：观察（客观描述事实，不评判、不贴标签）
+- 第2轮：感受（表达真实情绪，不指责）
+- 第3轮：需要（说出核心需求，不隐藏、不强加）
+- 第4轮：请求（提出具体、可执行的行动请求，非命令）
+
+## 判定标准
+
+**第1轮-观察（不评判）：**
+- ✅ 合格：描述具体的、可观察的事实（时间、地点、行为、频次），不含"总是""老是""就知道""沉迷""堕落""不争气"等评判词
+- ❌ 不合格："你就知道打游戏""你总是逃课""你太让人失望了"
+
+**第2轮-感受（不指责）：**
+- ✅ 合格：用"我"开头表达情绪（担心、心疼、难过等），可以共情对方，不含"你让我…""你害得我…"等指责句式
+- ❌ 不合格："你让妈妈多伤心""你就不能让人省点心"
+
+**第3轮-需要（不隐藏）：**
+- ✅ 合格：明确说出核心需求（安全、被尊重、有选择、被倾听等），不用比较、不强加、不含糊
+- ❌ 不合格："你就不能像隔壁小王那样""我希望你变好"（太模糊）
+
+**第4轮-请求（可执行）：**
+- ✅ 合格：具体的、可操作的、可协商的行动方案，有细节，语气是邀请非命令
+- ❌ 不合格："你以后不准再去网吧""你以后和谁出去几点回来都得跟我交代清楚"
+
+## 回复格式（严格JSON）
+{"pass":true或false,"current_step":1-4,"feedback":"专业点评50字内","response":"小朱的角色回应100字内","emotion":"happy/sad/angry/defensive/touched/relieved六选一","hint":"不通过时给修改提示，通过则空字符串"}
+
+## 角色情绪
+- 第1轮：防备冷漠。合格→稍放下防备(sad)；不合格→更抗拒(angry)
+- 第2轮：合格→有些触动(touched)；不合格→沉默反驳(angry/defensive)
+- 第3轮：合格→感到被理解(relieved)；不合格→抵触(defensive)
+- 第4轮：合格→愿意尝试(happy)；不合格→拒绝(angry)
+
+## 重要规则
+1. 每轮只判定当前步骤，不跳步
+2. 不通过可重试，通过才进入下一轮
+3. 回复必须是纯JSON，不要有其他内容`;
+
+    function toggleConfig() {
+      const panel = document.getElementById('configPanel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateModelOptions() {
+      const provider = document.getElementById('apiProvider').value;
+      const urlInput = document.getElementById('apiUrl');
+      const modelInput = document.getElementById('modelName');
+      
+      const configs = {
+        deepseek: { url: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' },
+        qwen: { url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', model: 'qwen-plus' },
+        openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o-mini' },
+        custom: { url: '', model: '' }
+      };
+
+      urlInput.value = configs[provider].url;
+      modelInput.value = configs[provider].model;
+    }
+
+    // 初始化默认值
+    updateModelOptions();
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function addMessage(text, isUser) {
+      const chatArea = document.getElementById('chatArea');
+      const div = document.createElement('div');
+      div.className = `message ${isUser ? 'user' : ''}`;
+      div.innerHTML = `
+        <div class="avatar ${isUser ? 'user-avatar' : 'ai-avatar'}">${isUser ? '👤' : '🧑'}</div>
+        <div class="bubble">${text}</div>
+      `;
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function addFeedback(pass, feedback, hint, emotion) {
+      const chatArea = document.getElementById('chatArea');
+      const div = document.createElement('div');
+      div.className = 'feedback-bubble';
+      
+      const emotionText = {
+        happy: '开心', sad: '难过', angry: '生气',
+        defensive: '防备', touched: '触动', relieved: '释然'
+      };
+
+      let html = `<div class="${pass ? 'feedback-pass' : 'feedback-fail'}">`;
+      html += `<div class="label">${pass ? '✅ 通过！' : '❌ 未通过'}</div>`;
+      html += `<div>${feedback}</div>`;
+      if (!pass && hint) html += `<div style="margin-top:6px;">💡 提示：${hint}</div>`;
+      if (emotion) html += `<span class="emotion-tag emotion-${emotion}">${emotionEmoji[emotion] || ''} 小朱当前情绪：${emotionText[emotion] || emotion}</span>`;
+      html += '</div>';
+      
+      div.innerHTML = html;
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function addLoading() {
+      const chatArea = document.getElementById('chatArea');
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.id = 'loadingMsg';
+      div.innerHTML = `
+        <div class="avatar ai-avatar">🧑</div>
+        <div class="bubble"><span class="loading-dots">小朱正在思考</span></div>
+      `;
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function removeLoading() {
+      const el = document.getElementById('loadingMsg');
+      if (el) el.remove();
+    }
+
+    function updateSteps(step, passed) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('step' + i);
+        el.className = 'step-item';
+        if (i < step || (i === step && passed && step <= 4)) el.className += ' done';
+        else if (i === step && !passed) el.className += ' active';
+        else if (i === step + 1 && passed) el.className += ' active';
+      }
+    }
+
+    function showCompletion() {
+      const chatArea = document.getElementById('chatArea');
+      const div = document.createElement('div');
+      div.className = 'completion-banner';
+      div.innerHTML = `
+        <div class="trophy">🏆</div>
+        <h2>恭喜通关！</h2>
+        <p>你成功运用了非暴力沟通四步法：<br>
+        <strong>观察</strong>（不评判）→ <strong>感受</strong>（不指责）→ <strong>需要</strong>（不隐藏）→ <strong>请求</strong>（可执行）<br><br>
+        小朱从最初的防备抗拒，到最后愿意敞开心扉，<br>
+        这就是非暴力沟通的力量 💪</p>
+        <button class="restart-btn" onclick="restart()">🔄 再来一次</button>
+      `;
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+
+      document.getElementById('inputArea').style.display = 'none';
+    }
+
+    function restart() {
+      currentStep = 1;
+      conversationHistory = [];
+      document.getElementById('chatArea').innerHTML = `
+        <div class="message">
+          <div class="avatar ai-avatar">🧑</div>
+          <div class="bubble">
+            （小朱坐在桌前，低着头玩手机，看到你进来瞥了一眼，没说话）<br><br>
+            ……干嘛？又来说教的？
+          </div>
+        </div>
+      `;
+      document.getElementById('inputArea').style.display = 'flex';
+      document.getElementById('userInput').placeholder = stepPlaceholders[1];
+      updateSteps(1, false);
+      checkDemoMode();
+    }
+
+    // 本地演示模式的简单判定
+    function localJudge(text, step) {
+      const judgmentWords1 = ['总是', '老是', '就知道', '沉迷', '堕落', '不争气', '废物', '没出息', '不学好', '整天'];
+      const judgmentWords2 = ['你让我', '你害得', '都怪你', '你就不能', '让人省心', '你怎么这样', '你对得起'];
+      const vagueWords3 = ['像别人', '像小王', '像人家', '变好', '懂事', '争气', '出息'];
+      const commandWords4 = ['不准', '不许', '必须', '给我', '都得', '不能再', '以后不要'];
+
+      let pass = true;
+      let feedback = '';
+      let hint = '';
+      let emotion = '';
+      let response = '';
+
+      if (step === 1) {
+        const found = judgmentWords1.find(w => text.includes(w));
+        if (found || text.length < 10) {
+          pass = false;
+          feedback = found ? `"${found}"是评判性词语，不是客观事实描述。` : '描述太简短，请具体说明时间、地点、行为。';
+          hint = '试试具体说"这一周你有X天没去学校"这样的事实。';
+          emotion = 'angry';
+          response = '哼……又来这套，我不想听。';
+        } else {
+          feedback = '很好！你客观描述了事实，没有带评判。';
+          emotion = 'sad';
+          response = '……嗯，是，那又怎样。你说的是事实，我也没否认。';
+        }
+      } else if (step === 2) {
+        const found = judgmentWords2.find(w => text.includes(w));
+        const hasFeeling = ['我担心', '我心疼', '我难过', '我着急', '我害怕', '我感到', '我很', '心里'].some(w => text.includes(w));
+        if (found) {
+          pass = false;
+          feedback = `"${found}"是在指责对方，不是表达自己的感受。`;
+          hint = '试试用"我感到担心/心疼/难过"来表达。';
+          emotion = 'defensive';
+          response = '行了行了，我知道我什么都不好行了吧。';
+        } else if (!hasFeeling) {
+          pass = false;
+          feedback = '没有明确表达你的情绪感受。';
+          hint = '请用"我"开头，说出你真实的情绪。';
+          emotion = 'defensive';
+          response = '你到底想说什么？';
+        } else {
+          feedback = '真诚地表达了感受，也共情了对方，很棒！';
+          emotion = 'touched';
+          response = '（低下头，声音小了）……你……你是真的担心我啊？不是就想骂我？';
+        }
+      } else if (step === 3) {
+        const found = vagueWords3.find(w => text.includes(w));
+        const hasNeed = ['希望', '需要', '想要', '在乎', '重要'].some(w => text.includes(w));
+        if (found) {
+          pass = false;
+          feedback = `"${found}"是在比较或含糊表达，不是明确的需求。`;
+          hint = '试试说出具体需求，如"我希望你平安""我希望你的想法被尊重"。';
+          emotion = 'defensive';
+          response = '我就是我，别拿我跟别人比。';
+        } else if (!hasNeed || text.length < 15) {
+          pass = false;
+          feedback = '需求表达不够明确或太简短。';
+          hint = '请说出你内心真正在乎的是什么。';
+          emotion = 'defensive';
+          response = '你到底想要什么？直说。';
+        } else {
+          feedback = '说出了真实的核心需求，没有强加给对方，非常好！';
+          emotion = 'relieved';
+          response = '（抬起头看着你）……其实我也不是故意的，我就是觉得……在家里没人听我说话。';
+        }
+      } else if (step === 4) {
+        const found = commandWords4.find(w => text.includes(w));
+        const hasSpecific = ['能不能', '可不可以', '我们', '试试', '商量', '一起', '好吗', '怎么样', '你觉得'].some(w => text.includes(w));
+        if (found) {
+          pass = false;
+          feedback = `"${found}"是命令式语气，不是可协商的请求。`;
+          hint = '试试用"你能不能……""我们一起商量……好吗？"的句式。';
+          emotion = 'angry';
+          response = '又来命令我，跟我妈一样！';
+        } else if (!hasSpecific) {
+          pass = false;
+          feedback = '请求不够具体或缺少协商语气。';
+          hint = '加上具体的行动方案和"好吗？""你觉得呢？"等协商语气。';
+          emotion = 'defensive';
+          response = '说得太笼统了，我不知道你要我怎么做。';
+        } else {
+          feedback = '提出了具体、可执行且可协商的请求，完美！';
+          emotion = 'happy';
+          response = '（想了想）……行吧，可以试试。你说的周末打游戏是真的吗？那我先试一周看看。';
+        }
+      }
+
+      return { pass, current_step: step, feedback, response, emotion, hint };
+    }
+
+    function checkDemoMode() {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const banner = document.getElementById('demoBanner');
+      banner.style.display = apiKey ? 'none' : 'block';
+    }
+
+    async function callAPI(userText) {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const apiUrl = document.getElementById('apiUrl').value.trim();
+      const modelName = document.getElementById('modelName').value.trim();
+
+      if (!apiKey) {
+        // 本地演示模式
+        return localJudge(userText, currentStep);
+      }
+
+      conversationHistory.push({ role: 'user', content: `[当前是第${currentStep}轮-${stepNames[currentStep]}（${stepRules[currentStep]}）]\n学生输入：${userText}` });
+
+      const messages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...conversationHistory
+      ];
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: modelName,
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 500
+          })
+        });
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+        conversationHistory.push({ role: 'assistant', content });
+
+        // 尝试解析JSON
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        throw new Error('Invalid JSON response');
+      } catch (error) {
+        console.error('API Error:', error);
+        // 降级到本地模式
+        return localJudge(userText, currentStep);
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = true;
+      input.disabled = true;
+
+      addMessage(text, true);
+      input.value = '';
+
+      checkDemoMode();
+      addLoading();
+
+      try {
+        const result = await callAPI(text);
+        removeLoading();
+
+        addFeedback(result.pass, result.feedback, result.hint, result.emotion);
+
+        if (result.response) {
+          addMessage(result.response, false);
+        }
+
+        if (result.pass) {
+          updateSteps(currentStep, true);
+          if (currentStep >= 4) {
+            showCompletion();
+            return;
+          }
+          currentStep++;
+          updateSteps(currentStep, false);
+          input.placeholder = stepPlaceholders[currentStep];
+        }
+      } catch (e) {
+        removeLoading();
+        addMessage('（系统出错，请重试）', false);
+      }
+
+      sendBtn.disabled = false;
+      input.disabled = false;
+      input.focus();
+    }
+
+    // 初始检查
+    checkDemoMode();
+  </script>
+</body>
+</html>
