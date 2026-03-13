@@ -600,32 +600,14 @@
 
     <div class="config-panel" id="configPanel">
       <div class="config-grid">
-        <div class="config-field">
-          <label>API Key</label>
-          <input type="password" id="apiKey" placeholder="输入你的 API Key" />
-        </div>
-        <div class="config-field">
+        <div class="config-field" style="grid-column:1/-1;">
           <label>模型服务</label>
-          <select id="apiProvider" onchange="updateProviderConfig()">
-            <option value="deepseek">DeepSeek</option>
-            <option value="qwen">通义千问</option>
-            <option value="openai">OpenAI</option>
-            <option value="custom">自定义</option>
+          <select id="apiProvider" onchange="switchProvider()">
+            <!-- Options populated dynamically from /api/verify -->
           </select>
         </div>
-        <div class="config-field">
-          <label>API 地址</label>
-          <input type="text" id="apiUrl" placeholder="https://api.deepseek.com/v1/chat/completions" />
-        </div>
-        <div class="config-field">
-          <label>模型名称</label>
-          <input type="text" id="modelName" placeholder="deepseek-chat" />
-        </div>
         <div class="config-note">
-          API Key 仅保存在浏览器本地，不会上传至任何服务器。配置成功后将自动开启 AI 模式。
-        </div>
-        <div class="config-actions">
-          <button class="btn-save" onclick="saveAndVerifyConfig()">保存并验证</button>
+          模型由服务端代理调用，API Key 安全存储在服务器环境变量中，不会暴露给浏览器。
         </div>
       </div>
     </div>
@@ -700,6 +682,15 @@
     let scenarioData = null;
     let configData = null;
     let apiMode = false;
+    let activeProvider = null;       // e.g. 'gemini'
+    let availableProviders = {};     // { gemini: true, gpt5mini: false, ... }
+
+    const PROVIDER_NAMES = {
+      gemini: 'Gemini 3 Flash',
+      gpt5mini: 'GPT-5 mini',
+      deepseek: 'DeepSeek',
+      qwen: '通义千问'
+    };
 
     const stepNames = ['', '观察', '感受', '需要', '请求'];
     const stepRules = ['', '不评判', '不指责', '不隐藏', '可执行'];
@@ -763,49 +754,60 @@
     };
 
     // ========================
-    // Config & API
+    // Config & API (server-side proxy)
     // ========================
     async function loadConfig() {
       try {
         const resp = await fetch('config.json');
         configData = await resp.json();
-        // Restore saved values from localStorage
-        const saved = localStorage.getItem('nvc_api_config');
-        if (saved) {
-          const s = JSON.parse(saved);
-          if (s.apiKey) configData.api.apiKey = s.apiKey;
-          if (s.apiUrl) configData.api.apiUrl = s.apiUrl;
-          if (s.model) configData.api.model = s.model;
-          if (s.provider) configData.api.provider = s.provider;
-        }
-        // Fill form
-        document.getElementById('apiKey').value = configData.api.apiKey || '';
-        document.getElementById('apiUrl').value = configData.api.apiUrl || '';
-        document.getElementById('modelName').value = configData.api.model || '';
-        if (configData.api.provider) {
-          document.getElementById('apiProvider').value = configData.api.provider;
-        }
       } catch (e) {
         console.warn('Config load failed, using defaults');
-        configData = {
-          api: { provider: 'deepseek', apiKey: '', apiUrl: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' },
-          providers: {
-            deepseek: { url: 'https://api.deepseek.com/v1/chat/completions', model: 'deepseek-chat' },
-            qwen: { url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', model: 'qwen-plus' },
-            openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o-mini' }
-          }
-        };
+        configData = { api: { provider: 'gemini' }, providers: {} };
+      }
+      // Restore user's provider preference
+      const saved = localStorage.getItem('nvc_provider');
+      if (saved) configData.api.provider = saved;
+    }
+
+    async function verifyProviders() {
+      try {
+        const resp = await fetch('/api/verify');
+        const data = await resp.json();
+        availableProviders = data.providers || {};
+      } catch (e) {
+        availableProviders = {};
+      }
+      // Populate the provider selector
+      const select = document.getElementById('apiProvider');
+      select.innerHTML = '';
+      const preferred = configData.api.provider;
+      let hasAvailable = false;
+      for (const [key, online] of Object.entries(availableProviders)) {
+        if (!online) continue;
+        hasAvailable = true;
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = PROVIDER_NAMES[key] || key;
+        if (key === preferred) opt.selected = true;
+        select.appendChild(opt);
+      }
+      if (hasAvailable) {
+        activeProvider = select.value;
+        updateAPIStatus(true);
+      } else {
+        select.innerHTML = '<option value="">无可用服务</option>';
+        activeProvider = null;
+        updateAPIStatus(false);
       }
     }
 
-    function updateProviderConfig() {
-      const provider = document.getElementById('apiProvider').value;
-      if (configData && configData.providers && configData.providers[provider]) {
-        document.getElementById('apiUrl').value = configData.providers[provider].url;
-        document.getElementById('modelName').value = configData.providers[provider].model;
-      } else if (provider === 'custom') {
-        document.getElementById('apiUrl').value = '';
-        document.getElementById('modelName').value = '';
+    function switchProvider() {
+      const val = document.getElementById('apiProvider').value;
+      if (val && availableProviders[val]) {
+        activeProvider = val;
+        configData.api.provider = val;
+        localStorage.setItem('nvc_provider', val);
+        updateAPIStatus(true);
       }
     }
 
@@ -816,22 +818,28 @@
       btn.classList.toggle('active');
     }
 
-    async function verifyAPI(apiKey, apiUrl, model) {
-      try {
-        const resp = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-          body: JSON.stringify({
-            model: model,
-            messages: [{ role: 'user', content: '请回复"OK"' }],
-            max_tokens: 10
-          })
-        });
-        const data = await resp.json();
-        return !!(data.choices && data.choices.length > 0);
-      } catch (e) {
-        return false;
-      }
+    function getActiveModel() {
+      if (!activeProvider || !configData.providers[activeProvider]) return null;
+      return configData.providers[activeProvider].model;
+    }
+
+    // Proxy call through /api/chat (API key stays server-side)
+    async function proxyCall(messages, temperature = 0.7, maxTokens = 800) {
+      const model = getActiveModel();
+      if (!activeProvider || !model) return null;
+      const resp = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: activeProvider,
+          model: model,
+          messages: messages,
+          temperature: temperature,
+          max_tokens: maxTokens
+        })
+      });
+      if (!resp.ok) throw new Error(`Proxy error: ${resp.status}`);
+      return await resp.json();
     }
 
     function updateAPIStatus(online) {
@@ -839,49 +847,15 @@
       const dot = document.getElementById('statusDot');
       const text = document.getElementById('statusText');
       const banner = document.getElementById('demoBanner');
+      const providerName = activeProvider ? (PROVIDER_NAMES[activeProvider] || activeProvider) : '';
       if (online) {
         dot.className = 'status-dot online';
-        text.textContent = 'AI 模式';
+        text.textContent = `AI 模式 · ${providerName}`;
         if (banner) banner.style.display = 'none';
       } else {
         dot.className = 'status-dot offline';
         text.textContent = '本地演示模式';
         if (banner) banner.style.display = 'block';
-      }
-    }
-
-    async function saveAndVerifyConfig() {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      const apiUrl = document.getElementById('apiUrl').value.trim();
-      const model = document.getElementById('modelName').value.trim();
-      const provider = document.getElementById('apiProvider').value;
-
-      if (!apiKey || !apiUrl || !model) {
-        alert('请填写完整的 API 配置');
-        return;
-      }
-
-      const btn = document.querySelector('.btn-save');
-      btn.textContent = '验证中...';
-      btn.disabled = true;
-
-      const ok = await verifyAPI(apiKey, apiUrl, model);
-
-      if (ok) {
-        configData.api = { provider, apiKey, apiUrl, model };
-        localStorage.setItem('nvc_api_config', JSON.stringify({ provider, apiKey, apiUrl, model }));
-        updateAPIStatus(true);
-        btn.textContent = '验证成功 \u2713';
-        setTimeout(() => {
-          btn.textContent = '保存并验证';
-          btn.disabled = false;
-          toggleConfig();
-        }, 1200);
-      } else {
-        updateAPIStatus(false);
-        btn.textContent = '验证失败，请检查配置';
-        btn.disabled = false;
-        setTimeout(() => { btn.textContent = '保存并验证'; }, 2000);
       }
     }
 
@@ -999,27 +973,14 @@
     }
 
     async function generateScenarioFromAPI() {
-      const apiKey = configData.api.apiKey;
-      const apiUrl = configData.api.apiUrl;
-      const model = configData.api.model;
-
       try {
-        const resp = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-          body: JSON.stringify({
-            model: model,
-            messages: [{ role: 'user', content: buildScenarioGenerationPrompt() }],
-            temperature: 0.9,
-            max_tokens: 1200
-          })
-        });
-        const data = await resp.json();
+        const data = await proxyCall(
+          [{ role: 'user', content: buildScenarioGenerationPrompt() }],
+          0.9, 1200
+        );
         const content = data.choices[0].message.content;
         const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          return JSON.parse(jsonMatch[0]);
-        }
+        if (jsonMatch) return JSON.parse(jsonMatch[0]);
         throw new Error('Invalid JSON');
       } catch (e) {
         console.error('Scenario generation failed:', e);
@@ -1136,20 +1097,7 @@
       ];
 
       try {
-        const resp = await fetch(configData.api.apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${configData.api.apiKey}`
-          },
-          body: JSON.stringify({
-            model: configData.api.model,
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 500
-          })
-        });
-        const data = await resp.json();
+        const data = await proxyCall(messages, 0.7, 500);
         const content = data.choices[0].message.content;
         conversationHistory.push({ role: 'assistant', content });
         const jsonMatch = content.match(/\{[\s\S]*\}/);
@@ -1337,32 +1285,21 @@
     // ========================
     async function init() {
       await loadConfig();
+      await verifyProviders();
 
-      // Try to verify API
-      const apiKey = configData.api.apiKey;
-      const apiUrl = configData.api.apiUrl;
-      const model = configData.api.model;
-
-      if (apiKey && apiUrl && model) {
-        const ok = await verifyAPI(apiKey, apiUrl, model);
-        updateAPIStatus(ok);
-
-        if (ok) {
-          // Generate scenario from API
-          document.querySelector('.loading-text').innerHTML = '正在生成训练场景<span class="loading-dots"></span>';
-          const scene = await generateScenarioFromAPI();
-          document.getElementById('loadingScreen').style.display = 'none';
-          document.getElementById('appContent').style.display = 'block';
-          renderScenario(scene || DEFAULT_SCENARIO);
-          return;
-        }
+      if (apiMode) {
+        // Generate scenario via server proxy
+        document.querySelector('.loading-text').innerHTML = '正在生成训练场景<span class="loading-dots"></span>';
+        const scene = await generateScenarioFromAPI();
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('appContent').style.display = 'block';
+        renderScenario(scene || DEFAULT_SCENARIO);
+      } else {
+        // Fallback: no API configured on server
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('appContent').style.display = 'block';
+        renderScenario(DEFAULT_SCENARIO);
       }
-
-      // Fallback: no API
-      updateAPIStatus(false);
-      document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('appContent').style.display = 'block';
-      renderScenario(DEFAULT_SCENARIO);
     }
 
     init();
