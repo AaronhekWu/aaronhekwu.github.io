@@ -15,14 +15,14 @@
       "model": "openai/gpt-5-mini-2025-08-07",
       "envKey": "OPENAI_API_KEY"
     },
-    "deepseek": {
-      "name": "DeepSeek",
-      "model": "deepseek-chat",
-      "envKey": "DEEPSEEK_API_KEY"
+    "minimax": {
+      "name": "minimax2.5",
+      "model": "MiniMax-M2.5",
+      "envKey": "MINIMAX_API_KEY"
     },
     "qwen": {
       "name": "通义千问",
-      "model": "qwen-plus",
+      "model": "qwen3.5-plus",
       "envKey": "QWEN_API_KEY"
     }
   },
