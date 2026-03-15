@@ -3,8 +3,8 @@
 
 const PROVIDER_ENVKEYS = {
   gemini: 'GEMINI_API_KEY',
-  gpt5mini: 'AIMLAPI_KEY',
-  deepseek: 'DEEPSEEK_API_KEY',
+  gpt5mini: 'OPENAI_API_KEY',
+  minimax: 'MINIMAX_API_KEY',
   qwen: 'QWEN_API_KEY',
 };
 
