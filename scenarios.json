@@ -42,8 +42,50 @@
         "step4_pass": { "emotion": "happy", "response": "……行吧，可以试试。那我先按你说的做一周。" },
         "step4_fail": { "emotion": "angry", "response": "又来命令我，跟我妈一样！" }
       }
-    },{
-  "scenarios": [
+    },
+    {
+      "scenario": {
+        "title": "室友深夜外放",
+        "description": "大学宿舍里室友常在凌晨外放短视频，影响你休息。你多次忍耐后决定沟通，但担心说重了会伤和气。",
+        "setting": "大学宿舍"
+      },
+      "character": {
+        "name": "阿晨",
+        "age": "20",
+        "identity": "你的室友",
+        "personality": "大大咧咧，不太敏感，但并非故意",
+        "emotion_state": "有点不耐烦",
+        "core_issue": "认为宿舍是公共空间，自己没做错",
+        "avatar_emoji": "🧑‍🎓"
+      },
+      "player": {
+        "role": "室友",
+        "goal": "让阿晨愿意在夜间使用耳机"
+      },
+      "opening": {
+        "scene_desc": "凌晨一点，阿晨躺在床上外放短视频",
+        "first_line": "你还没睡啊？我声音已经很小了。"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["总是", "老是", "自私", "没素质", "烦死了", "一点不顾别人", "离谱", "受不了"],
+        "step2_bad_words": ["你让我", "你害得", "都怪你", "你就不能", "你太过分", "你怎么这样"],
+        "step3_bad_words": ["正常人", "别人都", "懂事", "成熟点", "像个大人", "有点自觉"],
+        "step4_bad_words": ["必须", "立刻", "不许", "给我", "你就得", "别再", "以后不准"],
+        "step2_good_words": ["我很困", "我焦虑", "我烦躁", "我担心", "我感到", "我有点崩溃"],
+        "step3_good_words": ["需要", "希望", "想要", "休息", "专注", "稳定作息"],
+        "step4_good_words": ["能不能", "可不可以", "你觉得", "我们试试", "商量", "一起", "好吗"]
+      },
+      "emotion_responses": {
+        "step1_pass": { "emotion": "sad", "response": "哦……你是说最近几天一点后我还在外放，是吗？" },
+        "step1_fail": { "emotion": "angry", "response": "我就刷会视频，你至于这么上纲上线吗？" },
+        "step2_pass": { "emotion": "touched", "response": "原来你是因为真的很累，不是故意找我麻烦。" },
+        "step2_fail": { "emotion": "defensive", "response": "怎么又怪到我头上了？" },
+        "step3_pass": { "emotion": "relieved", "response": "嗯，我懂了，你是需要稳定睡眠，不是要管我。" },
+        "step3_fail": { "emotion": "defensive", "response": "你别拿我跟别人比。" },
+        "step4_pass": { "emotion": "happy", "response": "行，那我晚上戴耳机，外放就白天看。" },
+        "step4_fail": { "emotion": "angry", "response": "你这就是命令我，我不接受。" }
+      }
+    },
     {
       "scenario": {
         "title": "抵触矫正报到的未成年社区矫正对象沟通",
