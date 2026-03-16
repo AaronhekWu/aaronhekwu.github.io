@@ -926,8 +926,8 @@
     let availableProviders = {};
 
     const PROVIDER_NAMES = {
-      gemini: 'Gemini 3 Flash',
-      gpt5mini: 'GPT-5 mini',
+      gemini: 'Gemini 2.5 Flash',
+      gpt5mini: 'GPT-4o mini',
       minimax: 'minimax2.5',
       qwen: '通义千问'
     };
@@ -1009,11 +1009,14 @@
     }
 
     async function verifyProviders() {
+      let verifyDetails = {};
       try {
         const resp = await fetch('/api/verify');
         const data = await resp.json();
         availableProviders = data.providers || {};
+        verifyDetails = data.details || {};
       } catch (e) {
+        console.error('Verify endpoint unreachable:', e);
         availableProviders = {};
       }
       const select = document.getElementById('apiProvider');
@@ -1036,6 +1039,8 @@
         select.innerHTML = '<option value="">无可用服务</option>';
         activeProvider = null;
         updateAPIStatus(false);
+        console.warn('No API providers available. Details:', verifyDetails);
+        console.warn('Visit /api/debug for full diagnostics');
       }
     }
 
@@ -1063,7 +1068,10 @@
 
     async function proxyCall(messages, temperature = 0.7, maxTokens = 8000) {
       const model = getActiveModel();
-      if (!activeProvider || !model) return null;
+      if (!activeProvider || !model) {
+        console.error('proxyCall failed: no active provider or model', { activeProvider, model, configProviders: configData?.providers });
+        return null;
+      }
       const resp = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1075,7 +1083,11 @@
           max_tokens: maxTokens
         })
       });
-      if (!resp.ok) throw new Error(`Proxy error: ${resp.status}`);
+      if (!resp.ok) {
+        const errBody = await resp.text().catch(() => '');
+        console.error(`API proxy error [${resp.status}]:`, errBody);
+        throw new Error(`Proxy error ${resp.status}: ${errBody.substring(0, 200)}`);
+      }
       return await resp.json();
     }
 
