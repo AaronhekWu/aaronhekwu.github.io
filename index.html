@@ -1005,7 +1005,7 @@
         configData = {
           api: {
             baseUrl: '',
-            endpoints: { verify: '', chat: 'https://fc-mp-1ff77b60-d1e4-4cf7-b8d1-9843fece77c8.next.bspapp.com/chat' },
+            endpoints: { verify: '/verify', chat: '/chat' },
             provider: 'qwen'
           },
           providers: {}
@@ -1013,7 +1013,7 @@
       }
 
       configData.api = configData.api || {};
-      configData.api.endpoints = configData.api.endpoints || { verify: '', chat: '/chat' };
+      configData.api.endpoints = configData.api.endpoints || { verify: '/verify', chat: '/chat' };
       const saved = localStorage.getItem('nvc_provider');
       if (saved) configData.api.provider = saved;
     }
@@ -1021,7 +1021,7 @@
     function buildApiUrl(endpointKey) {
       const endpoint = configData?.api?.endpoints?.[endpointKey] || '';
       const baseUrl = (configData?.api?.baseUrl || '').trim().replace(/\/$/, '');
-      if (!endpoint) return '';
+      if (!endpoint) throw new Error(`Missing endpoint config: ${endpointKey}`);
       if (/^https?:\/\//i.test(endpoint)) return endpoint;
       const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
       return baseUrl ? `${baseUrl}${normalizedEndpoint}` : `/api${normalizedEndpoint}`;
@@ -1029,20 +1029,14 @@
 
     async function verifyProviders() {
       let verifyDetails = {};
-      const verifyUrl = buildApiUrl('verify');
-      if (!verifyUrl) {
-        // 仅配置 /chat 时，默认放开 config.json 里声明的 provider
-        availableProviders = Object.fromEntries(Object.keys(configData.providers || {}).map((k) => [k, true]));
-      } else {
-        try {
-          const resp = await fetch(verifyUrl);
-          const data = await resp.json();
-          availableProviders = data.providers || {};
-          verifyDetails = data.details || {};
-        } catch (e) {
-          console.error('Verify endpoint unreachable:', e);
-          availableProviders = Object.fromEntries(Object.keys(configData.providers || {}).map((k) => [k, true]));
-        }
+      try {
+        const resp = await fetch(buildApiUrl('verify'));
+        const data = await resp.json();
+        availableProviders = data.providers || {};
+        verifyDetails = data.details || {};
+      } catch (e) {
+        console.error('Verify endpoint unreachable:', e);
+        availableProviders = {};
       }
       const select = document.getElementById('apiProvider');
       select.innerHTML = '';

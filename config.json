@@ -2,8 +2,8 @@
   "api": {
     "baseUrl": "",
     "endpoints": {
-      "verify": "",
-      "chat": "https://fc-mp-1ff77b60-d1e4-4cf7-b8d1-9843fece77c8.next.bspapp.com/chat"
+      "verify": "/verify",
+      "chat": "/chat"
     },
     "provider": "qwen",
     "temperature": 0.7,

@@ -1,7 +1,3 @@
-// Vercel Serverless Function — proxies LLM requests, keeps API keys server-side.
-// Environment variables required in Vercel dashboard:
-//   GEMINI_API_KEY, OPENAI_API_KEY, MINIMAX_API_KEY, QWEN_API_KEY
-
 const PROVIDER_CONFIG = {
   gemini: {
     url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',

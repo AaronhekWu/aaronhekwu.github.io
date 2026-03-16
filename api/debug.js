@@ -1,7 +1,3 @@
-// Vercel Serverless Function — 可视化诊断工具
-// 访问 /api/debug 查看 HTML 诊断报告
-// 访问 /api/debug?format=json 获取 JSON 格式
-// 访问 /api/debug?test=true 执行真实 API 连通性测试
 
 const PROVIDER_CONFIG = {
   gemini: {
