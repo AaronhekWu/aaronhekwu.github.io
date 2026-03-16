@@ -1,10 +1,20 @@
 {
   "api": {
-    "provider": "gemini",
+    "baseUrl": "",
+    "endpoints": {
+      "verify": "/verify",
+      "chat": "/chat"
+    },
+    "provider": "qwen",
     "temperature": 0.7,
     "maxTokens": 8000
   },
   "providers": {
+    "qwen": {
+      "name": "通义千问",
+      "model": "qwen-turbo",
+      "envKey": "QWEN_API_KEY"
+    },
     "gemini": {
       "name": "Gemini 2.5 Flash",
       "model": "gemini-2.5-flash",
@@ -16,14 +26,9 @@
       "envKey": "OPENAI_API_KEY"
     },
     "minimax": {
-      "name": "minimax2.5",
+      "name": "MiniMax M2.5",
       "model": "MiniMax-M2.5",
       "envKey": "MINIMAX_API_KEY"
-    },
-    "qwen": {
-      "name": "通义千问",
-      "model": "qwen-turbo",
-      "envKey": "QWEN_API_KEY"
     }
   },
   "promptTemplate": "nvc-prompt-template.md"

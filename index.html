@@ -1002,16 +1002,35 @@
         configData = await resp.json();
       } catch (e) {
         console.warn('Config load failed, using defaults');
-        configData = { api: { provider: 'gemini' }, providers: {} };
+        configData = {
+          api: {
+            baseUrl: '',
+            endpoints: { verify: '/verify', chat: '/chat' },
+            provider: 'qwen'
+          },
+          providers: {}
+        };
       }
+
+      configData.api = configData.api || {};
+      configData.api.endpoints = configData.api.endpoints || { verify: '/verify', chat: '/chat' };
       const saved = localStorage.getItem('nvc_provider');
       if (saved) configData.api.provider = saved;
+    }
+
+    function buildApiUrl(endpointKey) {
+      const endpoint = configData?.api?.endpoints?.[endpointKey] || '';
+      const baseUrl = (configData?.api?.baseUrl || '').trim().replace(/\/$/, '');
+      if (!endpoint) throw new Error(`Missing endpoint config: ${endpointKey}`);
+      if (/^https?:\/\//i.test(endpoint)) return endpoint;
+      const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+      return baseUrl ? `${baseUrl}${normalizedEndpoint}` : `/api${normalizedEndpoint}`;
     }
 
     async function verifyProviders() {
       let verifyDetails = {};
       try {
-        const resp = await fetch('/api/verify');
+        const resp = await fetch(buildApiUrl('verify'));
         const data = await resp.json();
         availableProviders = data.providers || {};
         verifyDetails = data.details || {};
@@ -1072,7 +1091,7 @@
         console.error('proxyCall failed: no active provider or model', { activeProvider, model, configProviders: configData?.providers });
         return null;
       }
-      const resp = await fetch('/api/chat', {
+      const resp = await fetch(buildApiUrl('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
