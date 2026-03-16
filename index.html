@@ -1446,6 +1446,15 @@
       document.getElementById('inputArea').style.display = 'none';
     }
 
+    function setInputAvailability(enabled) {
+      const input = document.getElementById('userInput');
+      const sendBtn = document.getElementById('sendBtn');
+      if (!input || !sendBtn) return;
+      input.disabled = !enabled;
+      sendBtn.disabled = !enabled;
+      if (enabled) input.focus();
+    }
+
     // ========================
     // Core Flow
     // ========================
@@ -1461,9 +1470,7 @@
       const text = input.value.trim();
       if (!text) return;
 
-      const sendBtn = document.getElementById('sendBtn');
-      sendBtn.disabled = true;
-      input.disabled = true;
+      setInputAvailability(false);
 
       addMessage(text, true);
       input.value = '';
@@ -1478,6 +1485,7 @@
         if (result.pass) {
           updateSteps(currentStep, true);
           if (currentStep >= 4) {
+            setInputAvailability(true);
             showCompletion();
             return;
           }
@@ -1490,9 +1498,7 @@
         addMessage('（系统出错，请重试）', false);
       }
 
-      sendBtn.disabled = false;
-      input.disabled = false;
-      input.focus();
+      setInputAvailability(true);
     }
 
     async function generateNewScenario() {
