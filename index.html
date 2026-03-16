@@ -843,6 +843,13 @@
     <div class="config-panel" id="configPanel">
       <div class="config-grid">
         <div class="config-field">
+          <label>运行模式</label>
+          <select id="runMode" onchange="switchRunMode()">
+            <option value="local">本地模式（静态场景）</option>
+            <option value="api">AI 模式（Serverless 网关）</option>
+          </select>
+        </div>
+        <div class="config-field">
           <label>AI 模型服务</label>
           <select id="apiProvider" onchange="switchProvider()">
             <!-- Options populated dynamically from backend config / chat health check -->
@@ -899,8 +906,8 @@
         </div>
 
         <div id="demoBanner" class="demo-banner" style="display:none;">
-          当前为本地演示模式（未配置 API），使用关键词匹配进行简单判定。<br>
-          配置 API 后可获得 AI 智能判定与动态场景生成。
+          当前为本地模式：已从静态 JSON 自动导入场景模板。<br>
+          切换到 AI 模式后，将通过 Serverless 网关进行流式判定。
         </div>
 
         <div class="chat-area" id="chatArea"></div>
@@ -922,8 +929,11 @@
     let scenarioData = null;
     let configData = null;
     let apiMode = false;
+    let runMode = 'local';
     let activeProvider = null;
     let availableProviders = {};
+    let staticScenarios = [];
+    let currentScenarioIndex = 0;
 
     const PROVIDER_NAMES = {
       gemini: 'Gemini 2.5 Flash',
@@ -1003,6 +1013,8 @@
       } catch (e) {
         console.warn('Config load failed, using defaults');
         configData = {
+          app: { defaultMode: 'local' },
+          staticScenarios: { url: 'scenarios.json' },
           api: {
             baseUrl: '',
             endpoints: { verify: '/verify', chat: '/chat' },
@@ -1012,10 +1024,47 @@
         };
       }
 
+      configData.app = configData.app || {};
+      configData.staticScenarios = configData.staticScenarios || { url: 'scenarios.json' };
       configData.api = configData.api || {};
       configData.api.endpoints = configData.api.endpoints || { verify: '/verify', chat: '/chat' };
-      const saved = localStorage.getItem('nvc_provider');
-      if (saved) configData.api.provider = saved;
+      const savedProvider = localStorage.getItem('nvc_provider');
+      if (savedProvider) configData.api.provider = savedProvider;
+
+      const defaultMode = configData.app.defaultMode === 'api' ? 'api' : 'local';
+      const savedMode = localStorage.getItem('nvc_mode');
+      runMode = (savedMode === 'api' || savedMode === 'local') ? savedMode : defaultMode;
+      document.getElementById('runMode').value = runMode;
+    }
+
+    async function loadStaticScenarios() {
+      const url = configData?.staticScenarios?.url || 'scenarios.json';
+      try {
+        const resp = await fetch(url, { cache: 'no-store' });
+        const data = await resp.json();
+        const list = Array.isArray(data) ? data : data.scenarios;
+        if (Array.isArray(list) && list.length > 0) {
+          const previousLength = staticScenarios.length;
+          staticScenarios = list;
+          if (!previousLength) {
+            currentScenarioIndex = 0;
+          } else if (currentScenarioIndex >= staticScenarios.length) {
+            currentScenarioIndex = 0;
+          }
+          return;
+        }
+      } catch (e) {
+        console.warn('Failed to load static scenarios:', e);
+      }
+      staticScenarios = [DEFAULT_SCENARIO];
+      currentScenarioIndex = 0;
+    }
+
+    function getNextStaticScenario() {
+      if (!staticScenarios.length) return DEFAULT_SCENARIO;
+      const scene = staticScenarios[currentScenarioIndex % staticScenarios.length];
+      currentScenarioIndex = (currentScenarioIndex + 1) % staticScenarios.length;
+      return scene;
     }
 
     function buildApiUrl(endpointKey) {
@@ -1053,14 +1102,12 @@
       }
       if (hasAvailable) {
         activeProvider = select.value;
-        updateAPIStatus(true);
       } else {
         select.innerHTML = '<option value="">无可用服务</option>';
         activeProvider = null;
-        updateAPIStatus(false);
         console.warn('No API providers available. Details:', verifyDetails);
-        console.warn('请检查云函数 /chat 触发器与环境变量配置');
       }
+      updateAPIStatus();
     }
 
     function switchProvider() {
@@ -1069,8 +1116,15 @@
         activeProvider = val;
         configData.api.provider = val;
         localStorage.setItem('nvc_provider', val);
-        updateAPIStatus(true);
       }
+      updateAPIStatus();
+    }
+
+    function switchRunMode() {
+      runMode = document.getElementById('runMode').value === 'api' ? 'api' : 'local';
+      localStorage.setItem('nvc_mode', runMode);
+      updateAPIStatus();
+      generateNewScenario();
     }
 
     function toggleConfig() {
@@ -1085,7 +1139,7 @@
       return configData.providers[activeProvider].model;
     }
 
-    async function proxyCall(messages, temperature = 0.7, maxTokens = 8000) {
+    async function proxyCall(messages, temperature = 0.7, maxTokens = 8000, onChunk = null) {
       const model = getActiveModel();
       if (!activeProvider || !model) {
         console.error('proxyCall failed: no active provider or model', { activeProvider, model, configProviders: configData?.providers });
@@ -1096,163 +1150,79 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           provider: activeProvider,
-          model: model,
-          messages: messages,
-          temperature: temperature,
-          max_tokens: maxTokens
+          model,
+          messages,
+          temperature,
+          max_tokens: maxTokens,
+          stream: true
         })
       });
       if (!resp.ok) {
         const errBody = await resp.text().catch(() => '');
-        console.error(`API proxy error [${resp.status}]:`, errBody);
         throw new Error(`Proxy error ${resp.status}: ${errBody.substring(0, 200)}`);
       }
-      return await resp.json();
+
+      const contentType = resp.headers.get('content-type') || '';
+      if (!resp.body || (!contentType.includes('text/event-stream') && !onChunk)) {
+        return await resp.json();
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let fullText = '';
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        if (contentType.includes('text/event-stream')) {
+          const events = buffer.split('\n\n');
+          buffer = events.pop() || '';
+          for (const evt of events) {
+            const lines = evt.split('\n').filter(line => line.startsWith('data:'));
+            for (const line of lines) {
+              const payload = line.slice(5).trim();
+              if (!payload || payload === '[DONE]') continue;
+              try {
+                const parsed = JSON.parse(payload);
+                const delta = parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.message?.content || '';
+                if (delta) {
+                  fullText += delta;
+                  if (onChunk) onChunk(fullText);
+                }
+              } catch {
+                fullText += payload;
+                if (onChunk) onChunk(fullText);
+              }
+            }
+          }
+        } else {
+          fullText += buffer;
+          buffer = '';
+          if (onChunk) onChunk(fullText);
+        }
+      }
+
+      if (buffer && !contentType.includes('text/event-stream')) fullText += buffer;
+      return { choices: [{ message: { content: fullText } }] };
     }
 
-    function updateAPIStatus(online) {
-      apiMode = online;
+    function updateAPIStatus() {
+      apiMode = runMode === 'api' && !!activeProvider;
       const dot = document.getElementById('statusDot');
       const text = document.getElementById('statusText');
       const banner = document.getElementById('demoBanner');
       const providerName = activeProvider ? (PROVIDER_NAMES[activeProvider] || activeProvider) : '';
-      if (online) {
+      if (apiMode) {
         dot.className = 'status-dot online';
-        text.textContent = `AI \u00b7 ${providerName}`;
+        text.textContent = `AI 模式 · ${providerName}`;
         if (banner) banner.style.display = 'none';
       } else {
         dot.className = 'status-dot offline';
-        text.textContent = '本地演示模式';
+        text.textContent = runMode === 'api' ? 'AI 模式不可用，已回退本地模式' : '本地模式';
         if (banner) banner.style.display = 'block';
-      }
-    }
-
-    // ========================
-    // Scenario Generation
-    // ========================
-    function buildScenarioGenerationPrompt() {
-      return `你是一个非暴力沟通教学场景设计师。请生成一个适合练习"非暴力沟通四步法"的生活化场景。
-
-要求：
-1. 场景要贴近真实生活，涉及家庭、校园、职场、友情等常见关系冲突
-2. 角色要有鲜明性格和合理的情绪状态
-3. 冲突要有具体背景和细节，不能太抽象
-4. 每次生成不同类型的场景，确保多样性
-
-请严格按以下JSON格式输出，不要有其他内容：
-{
-  "scenario": {
-    "title": "场景标题（10字以内）",
-    "description": "场景描述（80字以内，包含人物关系、冲突背景、核心矛盾）",
-    "setting": "对话发生的具体场景（如：家中客厅、学校办公室等）"
-  },
-  "character": {
-    "name": "角色姓名",
-    "age": "年龄",
-    "identity": "身份",
-    "personality": "性格特征（30字以内）",
-    "emotion_state": "当前情绪状态（20字以内）",
-    "core_issue": "核心困扰（30字以内）",
-    "avatar_emoji": "代表角色的emoji（1个）"
-  },
-  "player": {
-    "role": "玩家扮演的角色",
-    "goal": "沟通目标（30字以内）"
-  },
-  "opening": {
-    "scene_desc": "场景描写（30字以内，用括号包裹，描述角色的状态动作）",
-    "first_line": "角色的第一句台词（30字以内，体现防备或冷漠）"
-  },
-  "judgment_keywords": {
-    "step1_bad_words": ["针对此场景的评判性词语列表，至少8个"],
-    "step2_bad_words": ["针对此场景的指责性句式列表，至少6个"],
-    "step3_bad_words": ["针对此场景的比较/含糊词语列表，至少6个"],
-    "step4_bad_words": ["针对此场景的命令式词语列表，至少6个"],
-    "step2_good_words": ["表达感受的词语列表，至少6个"],
-    "step3_good_words": ["表达需求的词语列表，至少5个"],
-    "step4_good_words": ["协商式请求的词语列表，至少5个"]
-  },
-  "emotion_responses": {
-    "step1_pass": { "emotion": "sad", "response": "角色在观察步骤通过后的回应（50字以内）" },
-    "step1_fail": { "emotion": "angry", "response": "角色在观察步骤失败后的回应（50字以内）" },
-    "step2_pass": { "emotion": "touched", "response": "角色在感受步骤通过后的回应（50字以内）" },
-    "step2_fail": { "emotion": "defensive", "response": "角色在感受步骤失败后的回应（50字以内）" },
-    "step3_pass": { "emotion": "relieved", "response": "角色在需要步骤通过后的回应（50字以内）" },
-    "step3_fail": { "emotion": "defensive", "response": "角色在需要步骤失败后的回应（50字以内）" },
-    "step4_pass": { "emotion": "happy", "response": "角色在请求步骤通过后的回应（50字以内）" },
-    "step4_fail": { "emotion": "angry", "response": "角色在请求步骤失败后的回应（50字以内）" }
-  }
-}`;
-    }
-
-    function buildDialogSystemPrompt(scene) {
-      const c = scene.character;
-      const s = scene.scenario;
-      const p = scene.player;
-
-      return `你是"${c.name}"，${c.identity}，${c.age}岁。${s.description}
-
-你的性格：${c.personality}
-你当前的情绪：${c.emotion_state}
-你的核心困扰：${c.core_issue}
-
-现在，${p.role}（由学生扮演）要和你进行一次沟通。
-
-## 核心任务
-这是一个"非暴力沟通四步法"教学训练系统。学生需要依次完成4轮对话：
-- 第1轮：观察（客观描述事实，不评判、不贴标签）
-- 第2轮：感受（表达真实情绪，不指责）
-- 第3轮：需要（说出核心需求，不隐藏、不强加）
-- 第4轮：请求（提出具体、可执行的行动请求，非命令）
-
-## 判定标准
-
-**第1轮-观察（不评判）：**
-- 合格：描述具体的、可观察的事实（时间、地点、行为、频次），不含评判性词语
-- 不合格：包含评判、贴标签、主观定性的词语
-
-**第2轮-感受（不指责）：**
-- 合格：用"我"开头表达情绪，可以共情对方，不含指责句式
-- 不合格：用"你让我""你害得我"等指责性句式
-
-**第3轮-需要（不隐藏）：**
-- 合格：明确说出核心需求，不用比较、不强加、不含糊
-- 不合格：拿他人比较、需求模糊不具体
-
-**第4轮-请求（可执行）：**
-- 合格：具体的、可操作的、可协商的行动方案，有细节，语气是邀请非命令
-- 不合格：命令式语气、笼统的要求
-
-## 回复格式（严格JSON）
-{"pass":true或false,"current_step":1-4,"feedback":"专业点评50字内","response":"${c.name}的角色回应100字内","emotion":"happy/sad/angry/defensive/touched/relieved六选一","hint":"不通过时给修改提示，通过则空字符串"}
-
-## 角色情绪变化
-- 第1轮：防备冷漠。合格→稍放下防备；不合格→更抗拒
-- 第2轮：合格→有些触动；不合格→沉默反驳
-- 第3轮：合格→感到被理解；不合格→抵触
-- 第4轮：合格→愿意尝试；不合格→拒绝
-
-## 重要规则
-1. 每轮只判定当前步骤，不跳步
-2. 不通过可重试，通过才进入下一轮
-3. 通过时回应要体现情绪变化
-4. 角色回应要真实自然，符合${c.name}的性格
-5. 回复必须是纯JSON，不要有其他内容`;
-    }
-
-    async function generateScenarioFromAPI() {
-      try {
-        const data = await proxyCall(
-          [{ role: 'user', content: buildScenarioGenerationPrompt() }],
-          0.9, 1200
-        );
-        const content = data.choices[0].message.content;
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return JSON.parse(jsonMatch[0]);
-        throw new Error('Invalid JSON');
-      } catch (e) {
-        console.error('Scenario generation failed:', e);
-        return null;
       }
     }
 
@@ -1356,7 +1326,8 @@
 
       conversationHistory.push({
         role: 'user',
-        content: `[当前是第${currentStep}轮-${stepNames[currentStep]}（${stepRules[currentStep]}）]\n学生输入：${userText}`
+        content: `[当前是第${currentStep}轮-${stepNames[currentStep]}（${stepRules[currentStep]}）]
+学生输入：${userText}`
       });
 
       const messages = [
@@ -1365,14 +1336,17 @@
       ];
 
       try {
-        const data = await proxyCall(messages, 0.7, 500);
-        const content = data.choices[0].message.content;
+        const data = await proxyCall(messages, 0.7, 500, (partial) => {
+          updateLoadingText(partial);
+        });
+        const content = data?.choices?.[0]?.message?.content || '';
         conversationHistory.push({ role: 'assistant', content });
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (jsonMatch) return JSON.parse(jsonMatch[0]);
         throw new Error('Invalid JSON');
       } catch (e) {
         console.error('API Error:', e);
+        addMessage('（网络异常，已自动回退本地判定）', false);
         return localJudge(userText, currentStep);
       }
     }
@@ -1417,10 +1391,16 @@
       const emoji = scenarioData ? scenarioData.character.avatar_emoji : '\u{1F9D1}';
       div.innerHTML = `
         <div class="avatar">${emoji}</div>
-        <div class="bubble"><span class="loading-dots">${name}正在思考</span></div>
+        <div class="bubble" id="loadingBubble"><span class="loading-dots">${name}正在思考</span></div>
       `;
       chatArea.appendChild(div);
       chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function updateLoadingText(text) {
+      const el = document.getElementById('loadingBubble');
+      if (!el || !text) return;
+      el.innerHTML = text.replace(/\n/g, '<br>');
     }
 
     function removeLoading() {
@@ -1471,6 +1451,15 @@
       document.getElementById('inputArea').style.display = 'none';
     }
 
+    function setInputAvailability(enabled) {
+      const input = document.getElementById('userInput');
+      const sendBtn = document.getElementById('sendBtn');
+      if (!input || !sendBtn) return;
+      input.disabled = !enabled;
+      sendBtn.disabled = !enabled;
+      if (enabled) input.focus();
+    }
+
     // ========================
     // Core Flow
     // ========================
@@ -1486,9 +1475,7 @@
       const text = input.value.trim();
       if (!text) return;
 
-      const sendBtn = document.getElementById('sendBtn');
-      sendBtn.disabled = true;
-      input.disabled = true;
+      setInputAvailability(false);
 
       addMessage(text, true);
       input.value = '';
@@ -1503,6 +1490,7 @@
         if (result.pass) {
           updateSteps(currentStep, true);
           if (currentStep >= 4) {
+            setInputAvailability(true);
             showCompletion();
             return;
           }
@@ -1515,9 +1503,7 @@
         addMessage('（系统出错，请重试）', false);
       }
 
-      sendBtn.disabled = false;
-      input.disabled = false;
-      input.focus();
+      setInputAvailability(true);
     }
 
     async function generateNewScenario() {
@@ -1525,24 +1511,9 @@
       conversationHistory = [];
       updateSteps(1, false);
       document.getElementById('inputArea').style.display = 'flex';
-
-      if (apiMode) {
-        document.getElementById('appContent').style.display = 'none';
-        document.getElementById('loadingScreen').style.display = 'flex';
-        document.querySelector('.loading-text').innerHTML = '正在生成新场景<span class="loading-dots"></span>';
-
-        const scene = await generateScenarioFromAPI();
-        document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('appContent').style.display = 'block';
-
-        if (scene) {
-          renderScenario(scene);
-        } else {
-          renderScenario(DEFAULT_SCENARIO);
-        }
-      } else {
-        renderScenario(DEFAULT_SCENARIO);
-      }
+      setInputAvailability(true);
+      await loadStaticScenarios();
+      renderScenario(getNextStaticScenario());
     }
 
     // ========================
@@ -1550,19 +1521,13 @@
     // ========================
     async function init() {
       await loadConfig();
+      await loadStaticScenarios();
       await verifyProviders();
+      updateAPIStatus();
 
-      if (apiMode) {
-        document.querySelector('.loading-text').innerHTML = '正在生成训练场景<span class="loading-dots"></span>';
-        const scene = await generateScenarioFromAPI();
-        document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('appContent').style.display = 'block';
-        renderScenario(scene || DEFAULT_SCENARIO);
-      } else {
-        document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('appContent').style.display = 'block';
-        renderScenario(DEFAULT_SCENARIO);
-      }
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('appContent').style.display = 'block';
+      renderScenario(getNextStaticScenario());
     }
 
     init();
