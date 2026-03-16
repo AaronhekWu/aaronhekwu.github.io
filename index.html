@@ -1040,17 +1040,12 @@
     async function loadStaticScenarios() {
       const url = configData?.staticScenarios?.url || 'scenarios.json';
       try {
-        const resp = await fetch(url, { cache: 'no-store' });
+        const resp = await fetch(url);
         const data = await resp.json();
         const list = Array.isArray(data) ? data : data.scenarios;
         if (Array.isArray(list) && list.length > 0) {
-          const previousLength = staticScenarios.length;
           staticScenarios = list;
-          if (!previousLength) {
-            currentScenarioIndex = 0;
-          } else if (currentScenarioIndex >= staticScenarios.length) {
-            currentScenarioIndex = 0;
-          }
+          currentScenarioIndex = 0;
           return;
         }
       } catch (e) {
@@ -1505,7 +1500,6 @@
       conversationHistory = [];
       updateSteps(1, false);
       document.getElementById('inputArea').style.display = 'flex';
-      await loadStaticScenarios();
       renderScenario(getNextStaticScenario());
     }
 

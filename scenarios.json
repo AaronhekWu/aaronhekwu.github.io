@@ -85,6 +85,408 @@
         "step4_pass": { "emotion": "happy", "response": "行，那我晚上戴耳机，外放就白天看。" },
         "step4_fail": { "emotion": "angry", "response": "你这就是命令我，我不接受。" }
       }
+    },
+    {
+      "scenario": {
+        "title": "抵触矫正报到的未成年社区矫正对象沟通",
+        "description": "小宇，17岁，因聚众斗殴被判处缓刑，需每周到司法所报到并提交思想汇报。他认为社工把自己当成“问题少年”，常常故意迟到、缺席，后来干脆拒绝沟通。",
+        "setting": "司法所谈话室"
+      },
+      "character": {
+        "name": "小宇",
+        "age": "17",
+        "identity": "未成年社区矫正对象",
+        "personality": "防备心强，敏感倔强，讨厌被贴标签，表面冷硬其实很在意别人看法",
+        "emotion_state": "抵触、烦躁",
+        "core_issue": "觉得自己被当成问题少年，不被尊重，因此抗拒矫正要求和沟通",
+        "avatar_emoji": "🧑"
+      },
+      "player": {
+        "role": "司法所矫正社会工作者",
+        "goal": "用非暴力沟通让小宇愿意按时完成社区矫正报到要求并主动配合"
+      },
+      "opening": {
+        "scene_desc": "小宇靠在椅背上，双手插兜，眼神躲闪，明显不想多说话",
+        "first_line": "说吧，又想批评我什么？"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["总是", "老是", "就知道", "问题少年", "不争气", "屡教不改", "故意", "整天", "没救了", "你这种人"],
+        "step2_bad_words": ["你让我", "你害得", "都怪你", "你怎么这样", "你就不能", "不让人省心", "你对得起", "你太让人失望了"],
+        "step3_bad_words": ["像别人", "像正常孩子", "懂事", "争气", "听话", "变好", "出息", "别人都可以"],
+        "step4_bad_words": ["必须", "不准", "不许", "给我", "以后都得", "不能再", "马上", "必须做到"],
+        "step2_good_words": ["我担心", "我着急", "我理解", "我能感觉到", "我心里", "我看到", "我在意", "我很希望"],
+        "step3_good_words": ["希望", "需要", "尊重", "被听见", "理解", "平等", "安全", "未来"],
+        "step4_good_words": ["能不能", "可不可以", "我们", "试试", "商量", "一起", "好吗", "你觉得"]
+      },
+      "emotion_responses": {
+        "step1_pass": {
+          "emotion": "sad",
+          "response": "……行，你说的也没错，我最近是没怎么配合。"
+        },
+        "step1_fail": {
+          "emotion": "angry",
+          "response": "又给我贴标签是吧？我就知道你们都一样。"
+        },
+        "step2_pass": {
+          "emotion": "touched",
+          "response": "……你真觉得我不是故意找事？"
+        },
+        "step2_fail": {
+          "emotion": "defensive",
+          "response": "行了，别装得很懂我一样。"
+        },
+        "step3_pass": {
+          "emotion": "relieved",
+          "response": "……其实我就是不想每次来都像犯人一样被盯着。"
+        },
+        "step3_fail": {
+          "emotion": "defensive",
+          "response": "少跟我说这些大道理，我不吃这套。"
+        },
+        "step4_pass": {
+          "emotion": "happy",
+          "response": "……那行吧，先试试。你说个我能接受的方式。"
+        },
+        "step4_fail": {
+          "emotion": "angry",
+          "response": "又来命令我？那我更不想配合了。"
+        }
+      }
+    },
+    {
+      "scenario": {
+        "title": "被过度管控的厌学少年与父母的沟通",
+        "description": "小楠，高二女生，因成绩下滑和学习压力大，被父母没收手机、限制出门、翻看聊天记录，还被全天盯着学习。她感到窒息，越来越不想上学，经常把自己锁在房间里。",
+        "setting": "家中客厅或餐桌旁"
+      },
+      "character": {
+        "name": "小楠",
+        "age": "17",
+        "identity": "高二学生",
+        "personality": "敏感压抑，自尊心强，渴望独立和被信任",
+        "emotion_state": "委屈、压抑",
+        "core_issue": "觉得父母只会控制自己，不愿意理解她的压力和感受",
+        "avatar_emoji": "👧"
+      },
+      "player": {
+        "role": "高二学生小楠（青少年本人）",
+        "goal": "用非暴力沟通向父母表达感受与诉求，减少过度管控，恢复正常上学节奏"
+      },
+      "opening": {
+        "scene_desc": "父母坐在客厅里神情严肃，小楠站在一旁，手里攥着衣角，情绪压抑",
+        "first_line": "你们是不是又觉得我不够努力？"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["总是", "老是", "控制", "烦死了", "神经质", "变态", "根本不讲理", "天天", "一直", "你们就知道"],
+        "step2_bad_words": ["你们让我", "你们害得", "都怪你们", "你们毁了我", "你们怎么这样", "你们就不能", "你们太过分了"],
+        "step3_bad_words": ["像别人家爸妈", "像别人", "正常父母", "懂事点", "讲道理一点", "别人的爸妈都", "你们就不能学学"],
+        "step4_bad_words": ["把手机还我", "必须", "不准再", "以后别管我", "给我自由", "马上", "你们得", "少管我"],
+        "step2_good_words": ["我感到", "我很压抑", "我委屈", "我难过", "我害怕", "我心里", "我知道你们担心", "我想让你们知道"],
+        "step3_good_words": ["需要", "信任", "尊重", "空间", "理解", "支持", "调整", "被听见"],
+        "step4_good_words": ["能不能", "可不可以", "我们", "试试", "商量", "一起", "好吗", "你们觉得"]
+      },
+      "emotion_responses": {
+        "step1_pass": {
+          "emotion": "sad",
+          "response": "……是，你们最近确实一直这样管着我。"
+        },
+        "step1_fail": {
+          "emotion": "angry",
+          "response": "你看吧，我就知道一开口又要吵起来。"
+        },
+        "step2_pass": {
+          "emotion": "touched",
+          "response": "……我还以为你们根本不会在意我到底有多难受。"
+        },
+        "step2_fail": {
+          "emotion": "defensive",
+          "response": "算了吧，反正你们只会觉得是我不懂事。"
+        },
+        "step3_pass": {
+          "emotion": "relieved",
+          "response": "……其实我最想要的，就是你们能信我一点。"
+        },
+        "step3_fail": {
+          "emotion": "defensive",
+          "response": "又开始说我应该怎样，你们根本没听我说。"
+        },
+        "step4_pass": {
+          "emotion": "happy",
+          "response": "……如果能这样试试，我愿意配合。"
+        },
+        "step4_fail": {
+          "emotion": "angry",
+          "response": "这不还是换一种方式管我吗？"
+        }
+      }
+    },
+    {
+      "scenario": {
+        "title": "校园欺凌事件中与施暴学生的沟通",
+        "description": "小浩，初三男生，多次带头嘲笑、孤立转学生，还藏起对方课本和作业。被老师批评后，他觉得“只是开玩笑”，不仅不认错，还和老师关系越来越僵。",
+        "setting": "学校办公室或心理辅导室"
+      },
+      "character": {
+        "name": "小浩",
+        "age": "15",
+        "identity": "初三学生",
+        "personality": "爱面子，嘴硬逞强，有号召力，不愿承认自己伤害了别人",
+        "emotion_state": "不服、戒备",
+        "core_issue": "把欺负同学当成玩笑，不愿面对自己行为造成的伤害",
+        "avatar_emoji": "🧑"
+      },
+      "player": {
+        "role": "班主任 / 班级心理老师",
+        "goal": "用非暴力沟通让小浩认识到行为影响，停止欺凌并愿意道歉"
+      },
+      "opening": {
+        "scene_desc": "小浩坐在椅子上晃着腿，嘴角带着不在乎的表情，看起来并不想认错",
+        "first_line": "我又怎么了？不就开个玩笑吗？"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["总是", "老是", "欺负人", "坏孩子", "没教养", "屡教不改", "故意", "带坏别人", "问题学生", "你这种人"],
+        "step2_bad_words": ["你让我", "你害得", "都怪你", "你怎么这样", "不让人省心", "你太过分了", "老师都被你气死了"],
+        "step3_bad_words": ["像别人", "学学别人", "做个好学生", "懂事", "争气", "别再丢脸", "成熟点"],
+        "step4_bad_words": ["马上道歉", "必须", "不准再", "以后给我老实点", "立刻", "不能再这样", "给我保证"],
+        "step2_good_words": ["我担心", "我疑惑", "我看到", "我在想", "我能感觉到", "我希望了解", "我并不想把你当坏孩子"],
+        "step3_good_words": ["尊重", "安全", "影响", "理解", "责任", "关系", "同学", "正向"],
+        "step4_good_words": ["能不能", "可不可以", "我们", "试试", "一起", "商量", "好吗", "你愿不愿意"]
+      },
+      "emotion_responses": {
+        "step1_pass": {
+          "emotion": "sad",
+          "response": "……行吧，我承认我确实有点过了。"
+        },
+        "step1_fail": {
+          "emotion": "angry",
+          "response": "又是这一套，反正你们就觉得都是我的错。"
+        },
+        "step2_pass": {
+          "emotion": "touched",
+          "response": "……你真不觉得我是故意想当坏人？"
+        },
+        "step2_fail": {
+          "emotion": "defensive",
+          "response": "得了吧，你们老师不都一个样。"
+        },
+        "step3_pass": {
+          "emotion": "relieved",
+          "response": "……我也没想过他会因为这事那么难受。"
+        },
+        "step3_fail": {
+          "emotion": "defensive",
+          "response": "说到底你还是觉得我有问题。"
+        },
+        "step4_pass": {
+          "emotion": "happy",
+          "response": "……行，我可以先不再闹他，至于道歉我试试。"
+        },
+        "step4_fail": {
+          "emotion": "angry",
+          "response": "凭什么你让我道歉我就得道歉？"
+        }
+      }
+    },
+    {
+      "scenario": {
+        "title": "被误会作弊的学生与班主任的沟通",
+        "description": "小航，高一男生，考试时帮同桌捡笔被误认为作弊，成绩被记零分，还在全班面前被批评并通知家长。此后他开始抵触班主任的课，上课睡觉、不交作业，甚至想逃课。",
+        "setting": "班主任办公室"
+      },
+      "character": {
+        "name": "小航",
+        "age": "16",
+        "identity": "高一学生",
+        "personality": "敏感内敛，自尊心强，被误解后容易退缩和对抗",
+        "emotion_state": "委屈、失落",
+        "core_issue": "觉得自己被误会后没有人愿意听解释，也没有被公平对待",
+        "avatar_emoji": "🧑"
+      },
+      "player": {
+        "role": "高一学生小航（青少年本人）",
+        "goal": "用非暴力沟通向班主任澄清事实，消除误会，重新回归正常课堂学习"
+      },
+      "opening": {
+        "scene_desc": "班主任坐在办公桌后翻看作业，小航站在门口，迟疑了几秒才走进来",
+        "first_line": "老师……我能和您说几句话吗？"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["你冤枉我", "你误会我", "你根本不讲理", "偏心", "当众羞辱我", "就是针对我", "你们都不信我", "故意的"],
+        "step2_bad_words": ["都是你害的", "你让我", "你毁了我", "都怪你", "你怎么能这样", "你太过分了", "我恨你"],
+        "step3_bad_words": ["像别的老师", "学学别人", "公平一点行不行", "你应该", "别那么武断", "做人别这样"],
+        "step4_bad_words": ["你必须", "马上给我恢复", "赶紧道歉", "你得", "必须改", "现在就", "立刻处理"],
+        "step2_good_words": ["我感到", "我很委屈", "我很难过", "我害怕", "我心里", "我想解释", "我希望您能听我说"],
+        "step3_good_words": ["公平", "解释", "理解", "核实", "信任", "正常上课", "补回来", "机会"],
+        "step4_good_words": ["能不能", "可不可以", "给我几分钟", "我们", "核实", "试试", "好吗", "您觉得"]
+      },
+      "emotion_responses": {
+        "step1_pass": {
+          "emotion": "sad",
+          "response": "……嗯，这件事就是那样发生的，我一直没机会说清楚。"
+        },
+        "step1_fail": {
+          "emotion": "angry",
+          "response": "算了，说了你们也不会信。"
+        },
+        "step2_pass": {
+          "emotion": "touched",
+          "response": "……我真的因为这件事特别难受。"
+        },
+        "step2_fail": {
+          "emotion": "defensive",
+          "response": "你现在说这些还有什么用。"
+        },
+        "step3_pass": {
+          "emotion": "relieved",
+          "response": "……我只是想把误会弄清楚，然后好好上课。"
+        },
+        "step3_fail": {
+          "emotion": "defensive",
+          "response": "你还是觉得问题在我身上。"
+        },
+        "step4_pass": {
+          "emotion": "happy",
+          "response": "……如果您愿意听我说，我愿意把之后的课都补上。"
+        },
+        "step4_fail": {
+          "emotion": "angry",
+          "response": "这不还是在逼我低头吗？"
+        }
+      }
+    },
+    {
+      "scenario": {
+        "title": "父母离异后逃课辍学少年的沟通",
+        "description": "小然，16岁，父母离异后都去外地打工，他跟着爷爷奶奶生活。因为觉得自己被抛弃，他开始频繁逃课、泡在台球厅、夜不归宿，拒绝与家人和老师沟通。",
+        "setting": "台球厅门口或小区长椅旁"
+      },
+      "character": {
+        "name": "小然",
+        "age": "16",
+        "identity": "有辍学风险的青少年",
+        "personality": "表面无所谓，内心脆弱失落，对亲密关系缺乏安全感",
+        "emotion_state": "冷漠、失望",
+        "core_issue": "觉得自己被家人抛下，没有人真正关心自己，所以放弃上学和规划未来",
+        "avatar_emoji": "🧑"
+      },
+      "player": {
+        "role": "学校驻校社工 / 表姐 / 表哥",
+        "goal": "用非暴力沟通让小然说出真实想法，愿意停止逃课并回校上课"
+      },
+      "opening": {
+        "scene_desc": "小然坐在台球厅门口刷着手机，看到你走近后别过脸去",
+        "first_line": "你来干嘛？也是来劝我回学校的？"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["总是", "老是", "不学好", "混日子", "没出息", "整天", "逃课", "没人管得了你", "烂泥扶不上墙", "废了"],
+        "step2_bad_words": ["你让爷爷奶奶", "你害得", "都怪你", "你怎么这么不懂事", "你对得起谁", "不让人省心", "你太自私了"],
+        "step3_bad_words": ["像别人家孩子", "争气点", "懂事点", "有点出息", "变好", "成熟点", "别人都能", "你为什么不能"],
+        "step4_bad_words": ["必须回去", "不准再来", "给我上学", "以后都得", "马上回家", "不能再这样", "听见没有"],
+        "step2_good_words": ["我心疼", "我担心", "我看到", "我知道你难受", "我能感觉到", "我在意", "我很怕你把自己一个人扛着"],
+        "step3_good_words": ["安全", "被听见", "未来", "选择", "陪伴", "理解", "支持", "安稳"],
+        "step4_good_words": ["能不能", "可不可以", "我们", "试试", "商量", "一起", "好吗", "你愿不愿意"]
+      },
+      "emotion_responses": {
+        "step1_pass": {
+          "emotion": "sad",
+          "response": "……是啊，我最近就这样，反正也没人真正在乎。"
+        },
+        "step1_fail": {
+          "emotion": "angry",
+          "response": "少管我，我想怎么样就怎么样。"
+        },
+        "step2_pass": {
+          "emotion": "touched",
+          "response": "……你真觉得我不是故意变成这样的？"
+        },
+        "step2_fail": {
+          "emotion": "defensive",
+          "response": "别说得好像你懂我一样。"
+        },
+        "step3_pass": {
+          "emotion": "relieved",
+          "response": "……其实我也不是不想上学，我就是觉得回去也没什么意思。"
+        },
+        "step3_fail": {
+          "emotion": "defensive",
+          "response": "又是这些大道理，我早听烦了。"
+        },
+        "step4_pass": {
+          "emotion": "happy",
+          "response": "……那就先试试吧，但你别说话不算数。"
+        },
+        "step4_fail": {
+          "emotion": "angry",
+          "response": "你跟他们一样，只会逼我。"
+        }
+      }
+    },
+    {
+      "scenario": {
+        "title": "被同伴排挤的青少年与同班同学的沟通",
+        "description": "小琳，初二女生，因为性格内向、说话带口音，被班里几个女生排挤。她们私下建群嘲笑她，集体活动故意不带她，还散播她的谣言。小琳越来越自卑，不想去学校。",
+        "setting": "学校走廊或操场一角"
+      },
+      "character": {
+        "name": "小琳",
+        "age": "14",
+        "identity": "初二学生",
+        "personality": "内向敏感，渴望被接纳，受伤后更不敢主动表达",
+        "emotion_state": "难过、害怕",
+        "core_issue": "长期被同伴排挤和嘲笑，觉得自己不被尊重，也越来越不敢融入班级",
+        "avatar_emoji": "👧"
+      },
+      "player": {
+        "role": "初二学生小琳（青少年本人）",
+        "goal": "用非暴力沟通向同学表达感受与诉求，停止排挤和谣言，恢复正常上学"
+      },
+      "opening": {
+        "scene_desc": "几个女生站在走廊边聊天，小琳鼓起勇气走过去，声音有些发抖",
+        "first_line": "我……我想和你们说件事。"
+      },
+      "judgment_keywords": {
+        "step1_bad_words": ["你们总是", "老是", "欺负我", "针对我", "坏", "恶心", "过分", "整天", "就知道", "没素质"],
+        "step2_bad_words": ["你们让我", "你们害得", "都怪你们", "你们毁了我", "你们怎么能这样", "太过分了", "我恨你们"],
+        "step3_bad_words": ["像正常人一样", "有点素质", "学学别人", "别那么低级", "做个好人", "成熟点", "懂点事"],
+        "step4_bad_words": ["你们不准", "以后必须", "马上停止", "给我道歉", "都得", "不能再", "立刻删掉"],
+        "step2_good_words": ["我很难过", "我害怕", "我睡不着", "我心里", "我感到", "我很受伤", "我想告诉你们"],
+        "step3_good_words": ["尊重", "安心", "相处", "融入", "理解", "安全", "朋友", "班级"],
+        "step4_good_words": ["能不能", "可不可以", "我们", "一起", "试试", "好吗", "不要再", "你们愿不愿意"]
+      },
+      "emotion_responses": {
+        "step1_pass": {
+          "emotion": "sad",
+          "response": "……你都知道了啊。"
+        },
+        "step1_fail": {
+          "emotion": "angry",
+          "response": "你别一上来就怪我们行不行？"
+        },
+        "step2_pass": {
+          "emotion": "touched",
+          "response": "……我没想到你会把这些感受说出来。"
+        },
+        "step2_fail": {
+          "emotion": "defensive",
+          "response": "你也太敏感了吧，我们又没怎样。"
+        },
+        "step3_pass": {
+          "emotion": "relieved",
+          "response": "……如果真能好好相处，其实我也不想一直这样。"
+        },
+        "step3_fail": {
+          "emotion": "defensive",
+          "response": "你这不还是在怪我们吗？"
+        },
+        "step4_pass": {
+          "emotion": "happy",
+          "response": "……那就先试试吧，以后活动可以一起。"
+        },
+        "step4_fail": {
+          "emotion": "angry",
+          "response": "你是在要求我们必须按你说的做吗？"
+        }
+      }
     }
   ]
 }
