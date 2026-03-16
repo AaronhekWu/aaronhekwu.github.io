@@ -845,7 +845,7 @@
         <div class="config-field">
           <label>AI 模型服务</label>
           <select id="apiProvider" onchange="switchProvider()">
-            <!-- Options populated dynamically from /api/verify -->
+            <!-- Options populated dynamically from backend config / chat health check -->
           </select>
         </div>
         <div class="config-note">
@@ -1002,22 +1002,47 @@
         configData = await resp.json();
       } catch (e) {
         console.warn('Config load failed, using defaults');
-        configData = { api: { provider: 'gemini' }, providers: {} };
+        configData = {
+          api: {
+            baseUrl: '',
+            endpoints: { verify: '', chat: 'https://fc-mp-1ff77b60-d1e4-4cf7-b8d1-9843fece77c8.next.bspapp.com/chat' },
+            provider: 'qwen'
+          },
+          providers: {}
+        };
       }
+
+      configData.api = configData.api || {};
+      configData.api.endpoints = configData.api.endpoints || { verify: '', chat: '/chat' };
       const saved = localStorage.getItem('nvc_provider');
       if (saved) configData.api.provider = saved;
     }
 
+    function buildApiUrl(endpointKey) {
+      const endpoint = configData?.api?.endpoints?.[endpointKey] || '';
+      const baseUrl = (configData?.api?.baseUrl || '').trim().replace(/\/$/, '');
+      if (!endpoint) return '';
+      if (/^https?:\/\//i.test(endpoint)) return endpoint;
+      const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+      return baseUrl ? `${baseUrl}${normalizedEndpoint}` : `/api${normalizedEndpoint}`;
+    }
+
     async function verifyProviders() {
       let verifyDetails = {};
-      try {
-        const resp = await fetch('/api/verify');
-        const data = await resp.json();
-        availableProviders = data.providers || {};
-        verifyDetails = data.details || {};
-      } catch (e) {
-        console.error('Verify endpoint unreachable:', e);
-        availableProviders = {};
+      const verifyUrl = buildApiUrl('verify');
+      if (!verifyUrl) {
+        // 仅配置 /chat 时，默认放开 config.json 里声明的 provider
+        availableProviders = Object.fromEntries(Object.keys(configData.providers || {}).map((k) => [k, true]));
+      } else {
+        try {
+          const resp = await fetch(verifyUrl);
+          const data = await resp.json();
+          availableProviders = data.providers || {};
+          verifyDetails = data.details || {};
+        } catch (e) {
+          console.error('Verify endpoint unreachable:', e);
+          availableProviders = Object.fromEntries(Object.keys(configData.providers || {}).map((k) => [k, true]));
+        }
       }
       const select = document.getElementById('apiProvider');
       select.innerHTML = '';
@@ -1040,7 +1065,7 @@
         activeProvider = null;
         updateAPIStatus(false);
         console.warn('No API providers available. Details:', verifyDetails);
-        console.warn('Visit /api/debug for full diagnostics');
+        console.warn('请检查云函数 /chat 触发器与环境变量配置');
       }
     }
 
@@ -1072,7 +1097,7 @@
         console.error('proxyCall failed: no active provider or model', { activeProvider, model, configProviders: configData?.providers });
         return null;
       }
-      const resp = await fetch('/api/chat', {
+      const resp = await fetch(buildApiUrl('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
