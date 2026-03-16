@@ -1,4 +1,10 @@
 {
+  "app": {
+    "defaultMode": "local"
+  },
+  "staticScenarios": {
+    "url": "scenarios.json"
+  },
   "api": {
     "baseUrl": "",
     "endpoints": {
