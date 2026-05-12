@@ -3,1527 +3,2199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NVC - 非暴力沟通训练系统</title>
+  <title>上海文化数字交易所 · 路演展示 | Shanghai Cultural Digital Exchange</title>
+  <meta name="description" content="上海某某文化数字交易所设立项目（暂定名）路演展示 · 合规型AI元宇宙产业基础设施 · SCDI 上海文化数字资产指数">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Cormorant+Garamond:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
     :root {
-      --blue-50: #eff6ff;
-      --blue-100: #dbeafe;
-      --blue-200: #bfdbfe;
-      --blue-300: #93c5fd;
-      --blue-400: #60a5fa;
-      --blue-500: #3b82f6;
-      --blue-600: #2563eb;
-      --blue-700: #1d4ed8;
-      --blue-800: #1e40af;
-      --blue-900: #1e3a8a;
-      --cyan-400: #22d3ee;
-      --indigo-500: #6366f1;
-      --success: #10b981;
-      --success-light: #d1fae5;
-      --danger: #ef4444;
-      --danger-light: #fee2e2;
-      --bg: #f0f4ff;
-      --card: #ffffff;
-      --text: #1e293b;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
-      --border: rgba(148, 163, 184, 0.2);
-      --glass: rgba(255, 255, 255, 0.7);
-      --shadow-sm: 0 1px 3px rgba(30, 58, 138, 0.06);
-      --shadow-md: 0 4px 24px rgba(30, 58, 138, 0.1);
-      --shadow-lg: 0 12px 48px rgba(30, 58, 138, 0.12);
-      --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --radius-xs: 8px;
-      --gradient-main: linear-gradient(135deg, var(--blue-600) 0%, var(--indigo-500) 50%, var(--cyan-400) 100%);
-      --gradient-subtle: linear-gradient(135deg, var(--blue-50) 0%, #f0f0ff 50%, #ecfeff 100%);
+      /* 申江蓝 Shenjiang Blue 主色 */
+      --sj-blue-950: #050d1e;
+      --sj-blue-900: #081834;
+      --sj-blue-800: #0b2349;
+      --sj-blue-700: #0e2f63;
+      --sj-blue-600: #143f82;
+      --sj-blue-500: #1e54a8;
+      --sj-blue-400: #2f6dc6;
+      --sj-blue-300: #5a92d9;
+      --sj-blue-200: #94baea;
+      --sj-blue-100: #c8dcf5;
+
+      /* 外滩金 Bund Gold 辅色（线条纹理） */
+      --bund-gold-900: #5a4621;
+      --bund-gold-700: #8a6f33;
+      --bund-gold-500: #c9a25a;
+      --bund-gold-400: #d8b56a;
+      --bund-gold-300: #e6c98a;
+      --bund-gold-200: #f1ddae;
+
+      /* 朱砂红（点缀，源自夜宴图） */
+      --vermilion: #b8423a;
+      --jade: #4a8c7a;
+
+      --bg: #050d1e;
+      --bg-soft: #081834;
+      --surface: rgba(14, 47, 99, 0.55);
+      --surface-strong: rgba(11, 35, 73, 0.85);
+      --line-gold: rgba(201, 162, 90, 0.28);
+      --line-gold-strong: rgba(216, 181, 106, 0.55);
+      --text: #e9eef8;
+      --text-dim: #a9b8d3;
+      --text-mute: #6e80a3;
+
+      --serif: 'Noto Serif SC', 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Noto Sans SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      --shadow-deep: 0 30px 80px rgba(2, 8, 24, 0.55), 0 12px 32px rgba(2, 8, 24, 0.4);
+      --shadow-gold-glow: 0 0 0 1px var(--line-gold), 0 18px 48px rgba(201, 162, 90, 0.08);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--sans);
       background: var(--bg);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 24px 16px;
       color: var(--text);
-      position: relative;
+      line-height: 1.7;
+      font-weight: 400;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: 0.01em;
     }
 
-    /* Animated background blobs */
-    body::before, body::after {
+    /* 全局电路板纹理背景 */
+    body::before {
       content: '';
       position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.4;
-      z-index: 0;
-      animation: blobFloat 20s ease-in-out infinite alternate;
-    }
-
-    body::before {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, var(--blue-300), transparent 70%);
-      top: -100px; left: -100px;
-    }
-
-    body::after {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, var(--cyan-400), transparent 70%);
-      bottom: -50px; right: -80px;
-      animation-delay: -10s;
-      animation-direction: alternate-reverse;
-    }
-
-    @keyframes blobFloat {
-      0% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(40px, -30px) scale(1.05); }
-      66% { transform: translate(-20px, 20px) scale(0.95); }
-      100% { transform: translate(30px, -10px) scale(1.02); }
-    }
-
-    .container {
-      width: 100%;
-      max-width: 800px;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg), var(--shadow-glow);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      position: relative;
-      z-index: 1;
-      backdrop-filter: blur(20px);
-      animation: containerIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes containerIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* ==================== Header ==================== */
-    .header {
-      padding: 32px 36px 28px;
-      text-align: center;
-      background: var(--gradient-main);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .header::before {
-      content: '';
-      position: absolute;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      animation: patternDrift 30s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(180deg, var(--sj-blue-950) 0%, var(--sj-blue-900) 50%, var(--sj-blue-950) 100%),
+        radial-gradient(circle at 20% 30%, rgba(30, 84, 168, 0.35) 0%, transparent 55%),
+        radial-gradient(circle at 80% 70%, rgba(11, 35, 73, 0.6) 0%, transparent 55%);
+      background-blend-mode: normal, screen, normal;
     }
 
-    @keyframes patternDrift {
-      from { transform: translateX(0); }
-      to { transform: translateX(60px); }
+    .circuit-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.22;
+      pointer-events: none;
     }
 
-    /* Shimmer effect across header */
-    .header::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: shimmer 4s ease-in-out infinite;
-    }
-
-    @keyframes shimmer {
-      0%, 100% { left: -100%; }
-      50% { left: 100%; }
-    }
-
-    .header-brand {
-      font-family: 'Noto Serif SC', serif;
-      font-size: 26px;
-      font-weight: 700;
-      color: white;
-      letter-spacing: 3px;
-      margin-bottom: 8px;
+    /* 工具类 */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
       position: relative;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      z-index: 2;
     }
 
-    .header-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,0.8);
-      font-weight: 300;
-      letter-spacing: 6px;
+    .section {
+      padding: 120px 0;
       position: relative;
+      z-index: 2;
     }
 
-    .header-actions {
-      margin-top: 18px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      position: relative;
-    }
-
-    .header-btn {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      padding: 7px 18px;
-      border-radius: 24px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      font-family: inherit;
-      backdrop-filter: blur(8px);
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-
-    .header-btn:hover {
-      background: rgba(255,255,255,0.25);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-
-    .header-btn.active {
-      background: white;
-      color: var(--blue-700);
-      border-color: white;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-
-    .api-status {
+    .section-label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.7);
-      margin-top: 14px;
-      position: relative;
-      font-weight: 400;
+      gap: 14px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      color: var(--bund-gold-400);
+      text-transform: uppercase;
+      margin-bottom: 20px;
     }
-
-    .status-dot {
+    .section-label::before {
+      content: '';
+      width: 36px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--bund-gold-500));
+    }
+    .section-label::after {
+      content: '';
       width: 8px;
       height: 8px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      position: relative;
+      border: 1px solid var(--bund-gold-500);
+      transform: rotate(45deg);
     }
 
-    .status-dot.online {
-      background: #34d399;
-      box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
-      animation: pulse 2s ease-in-out infinite;
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 18px;
+      letter-spacing: 0.02em;
+    }
+    .section-title .accent {
+      background: linear-gradient(135deg, var(--bund-gold-300) 0%, var(--bund-gold-500) 60%, var(--bund-gold-700) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .section-subtitle {
+      font-size: 17px;
+      color: var(--text-dim);
+      max-width: 780px;
+      line-height: 1.85;
+      margin-bottom: 56px;
     }
 
-    .status-dot.offline { background: #f87171; }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
-      50% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+    /* ============ 顶部导航 ============ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 0;
+      background: rgba(5, 13, 30, 0.75);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border-bottom: 1px solid var(--line-gold);
     }
-
-    /* ==================== Config Panel ==================== */
-    .config-panel {
-      padding: 0;
-      max-height: 0;
-      overflow: hidden;
-      background: var(--gradient-subtle);
-      border-bottom: 0 solid var(--border);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .config-panel.show {
-      padding: 24px 36px;
-      max-height: 200px;
-      border-bottom-width: 1px;
-    }
-
-    .config-grid {
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
       gap: 14px;
     }
-
-    .config-field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      letter-spacing: 0.5px;
-    }
-
-    .config-field select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--blue-200);
-      border-radius: var(--radius-xs);
-      font-size: 13px;
-      font-family: inherit;
-      outline: none;
-      background: white;
-      transition: all 0.3s;
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    .config-field select:focus {
-      border-color: var(--blue-500);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .config-note {
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      padding: 10px 14px;
-      background: rgba(59, 130, 246, 0.05);
-      border-radius: var(--radius-xs);
-      border-left: 3px solid var(--blue-300);
-    }
-
-    /* ==================== Scenario Card ==================== */
-    .scenario-card {
-      padding: 24px 36px;
-      border-bottom: 1px solid var(--border);
-      background: white;
+    .brand-mark {
+      width: 42px; height: 42px;
       position: relative;
-      overflow: hidden;
-      animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
     }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
+    .brand-text { line-height: 1.15; }
+    .brand-cn {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--text);
+      letter-spacing: 0.06em;
     }
-
-    .scenario-card::before {
+    .brand-en {
+      font-family: var(--sans);
+      font-size: 10.5px;
+      color: var(--bund-gold-400);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a:hover { color: var(--bund-gold-400); }
+    .nav-links a::after {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 4px; height: 100%;
-      background: var(--gradient-main);
-      border-radius: 0 4px 4px 0;
+      bottom: -6px; left: 0; right: 0;
+      height: 1px;
+      background: var(--bund-gold-500);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      transform-origin: left;
+    }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      padding: 10px 22px;
+      border: 1px solid var(--line-gold-strong);
+      color: var(--bund-gold-300);
+      background: transparent;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .nav-cta:hover {
+      background: var(--bund-gold-500);
+      color: var(--sj-blue-950);
+    }
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
     }
 
-    .scenario-label {
+    /* ============ Hero 区 ============ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 140px 0 80px;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 80px;
+      align-items: center;
+    }
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 50px; }
+    }
+
+    .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--blue-600);
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-      padding: 4px 12px;
-      background: var(--blue-50);
-      border-radius: 20px;
+      gap: 12px;
+      padding: 8px 16px;
+      border: 1px solid var(--line-gold-strong);
+      background: rgba(201, 162, 90, 0.05);
+      color: var(--bund-gold-300);
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--bund-gold-400);
+      box-shadow: 0 0 8px var(--bund-gold-400);
     }
 
-    .scenario-title {
-      font-family: 'Noto Serif SC', serif;
+    .hero-title {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(40px, 5.6vw, 78px);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+    .hero-title .gold {
+      background: linear-gradient(135deg, var(--bund-gold-200) 0%, var(--bund-gold-400) 40%, var(--bund-gold-700) 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-title .stack {
+      display: block;
+    }
+
+    .hero-en {
+      font-family: 'Cormorant Garamond', var(--serif);
+      font-size: clamp(18px, 1.8vw, 24px);
+      letter-spacing: 0.12em;
+      color: var(--bund-gold-300);
+      font-style: italic;
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--text-dim);
+      line-height: 1.95;
+      max-width: 580px;
+      margin-bottom: 44px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+      max-width: 580px;
+    }
+    .stat {
+      padding: 18px 0;
+      border-top: 1px solid var(--line-gold);
+    }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: clamp(24px, 2.6vw, 34px);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--bund-gold-200), var(--bund-gold-500));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--text-mute);
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .btn-primary, .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 32px;
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.35s ease;
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--bund-gold-500), var(--bund-gold-700));
+      color: var(--sj-blue-950);
+      border-color: var(--bund-gold-400);
+      box-shadow: 0 8px 28px rgba(201, 162, 90, 0.25);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(201, 162, 90, 0.4);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line-gold-strong);
+    }
+    .btn-ghost:hover {
+      background: rgba(201, 162, 90, 0.08);
+      border-color: var(--bund-gold-400);
+    }
+
+    /* Hero 右侧浦江天际线插画 */
+    .hero-art {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      max-width: 560px;
+      margin-left: auto;
+    }
+    .hero-art svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .hero-art::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      background: radial-gradient(circle at 50% 60%, rgba(201, 162, 90, 0.12) 0%, transparent 60%);
+      z-index: -1;
+    }
+
+    /* ============ 价值四柱 ============ */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--line-gold);
+      border: 1px solid var(--line-gold-strong);
+      margin-top: 60px;
+    }
+    .pillar {
+      padding: 38px 28px;
+      background: var(--surface-strong);
+      transition: background 0.4s;
+    }
+    .pillar:hover {
+      background: rgba(20, 63, 130, 0.7);
+    }
+    .pillar-num {
+      font-family: var(--serif);
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      color: var(--bund-gold-400);
+      margin-bottom: 16px;
+    }
+    .pillar-title {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .pillar-desc {
+      font-size: 13.5px;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    @media (max-width: 900px) {
+      .pillars { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ============ 通用卡片 ============ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line-gold);
+      padding: 32px;
+      position: relative;
+      transition: all 0.4s;
+    }
+    .card:hover {
+      border-color: var(--line-gold-strong);
+      background: var(--surface-strong);
+    }
+    .card-corner {
+      position: absolute;
+      width: 18px; height: 18px;
+      border: 1px solid var(--bund-gold-500);
+    }
+    .card-corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .card-corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .card-corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .card-corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* ============ 政策窗口 ============ */
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .policy-card {
+      padding: 36px 32px;
+      background: linear-gradient(160deg, var(--surface-strong), rgba(8, 24, 52, 0.5));
+      border: 1px solid var(--line-gold);
+      position: relative;
+      overflow: hidden;
+    }
+    .policy-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--bund-gold-500), transparent);
+    }
+    .policy-card .year {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 64px;
+      font-weight: 500;
+      color: var(--bund-gold-700);
+      line-height: 1;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+    .policy-card .pc-title {
+      font-family: var(--serif);
       font-size: 18px;
+      font-weight: 700;
+      color: var(--bund-gold-300);
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+    .policy-card .pc-body {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.85;
+    }
+
+    /* ============ 四层基础设施 ============ */
+    .infra-section {
+      background: linear-gradient(180deg, transparent 0%, rgba(11, 35, 73, 0.5) 50%, transparent 100%);
+    }
+    .infra-stack {
+      display: grid;
+      gap: 18px;
+      margin-top: 60px;
+    }
+    .infra-layer {
+      display: grid;
+      grid-template-columns: 110px 1fr auto;
+      align-items: center;
+      gap: 32px;
+      padding: 32px;
+      border: 1px solid var(--line-gold);
+      background: var(--surface);
+      position: relative;
+      transition: all 0.4s;
+    }
+    .infra-layer:hover {
+      border-color: var(--bund-gold-500);
+      background: var(--surface-strong);
+      transform: translateX(6px);
+    }
+    .infra-layer .layer-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 56px;
+      font-weight: 500;
+      color: var(--bund-gold-500);
+      line-height: 1;
+    }
+    .infra-layer .layer-content {
+      min-width: 0;
+    }
+    .infra-layer .layer-name {
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .infra-layer .layer-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      color: var(--bund-gold-400);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .infra-layer .layer-desc {
+      font-size: 14.5px;
+      color: var(--text-dim);
+      line-height: 1.85;
+    }
+    .infra-layer .layer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tag {
+      padding: 4px 10px;
+      border: 1px solid var(--line-gold);
+      font-size: 11.5px;
+      color: var(--bund-gold-300);
+      letter-spacing: 0.05em;
+    }
+    .layer-icon {
+      width: 64px; height: 64px;
+      border: 1px solid var(--line-gold-strong);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--bund-gold-400);
+    }
+    @media (max-width: 768px) {
+      .infra-layer { grid-template-columns: 1fr; gap: 14px; }
+      .layer-icon { display: none; }
+    }
+
+    /* ============ SCDI 旗舰产品 ============ */
+    .scdi-panel {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 60px;
+      align-items: center;
+      padding: 60px;
+      border: 1px solid var(--line-gold-strong);
+      background:
+        linear-gradient(135deg, rgba(11, 35, 73, 0.9), rgba(5, 13, 30, 0.9));
+      position: relative;
+      overflow: hidden;
+    }
+    .scdi-panel::before {
+      content: 'SCDI';
+      position: absolute;
+      right: -40px; bottom: -120px;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 380px;
+      color: var(--bund-gold-900);
+      opacity: 0.18;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .scdi-meta {
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--bund-gold-400);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .scdi-name {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3.4vw, 42px);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .scdi-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--bund-gold-300);
+      margin-bottom: 22px;
+    }
+    .scdi-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.95;
+      margin-bottom: 28px;
+    }
+    .scdi-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 24px;
+    }
+    .scdi-features li {
+      list-style: none;
+      padding-left: 22px;
+      position: relative;
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+    .scdi-features li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 9px;
+      width: 8px; height: 8px;
+      border: 1px solid var(--bund-gold-500);
+      transform: rotate(45deg);
+    }
+    .scdi-chart {
+      position: relative;
+      aspect-ratio: 1/1;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1024px) {
+      .scdi-panel { grid-template-columns: 1fr; padding: 40px 28px; }
+    }
+
+    /* ============ 阶段战略时间线 ============ */
+    .timeline {
+      position: relative;
+      margin-top: 60px;
+      padding: 40px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 80px; left: 32px; right: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--bund-gold-500) 10%, var(--bund-gold-500) 90%, transparent);
+    }
+    .timeline-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+    .phase {
+      position: relative;
+      padding-top: 110px;
+    }
+    .phase-dot {
+      position: absolute;
+      top: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px; height: 18px;
+      border: 2px solid var(--bund-gold-400);
+      background: var(--sj-blue-950);
+      transform-origin: center;
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .phase-dot::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      background: var(--bund-gold-500);
+    }
+    .phase-num {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 48px;
+      font-weight: 500;
+      color: var(--bund-gold-700);
+      line-height: 1;
+    }
+    .phase-years {
+      text-align: center;
+      font-family: var(--serif);
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      color: var(--bund-gold-300);
+      margin-bottom: 14px;
+    }
+    .phase-title {
+      text-align: center;
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .phase-body {
+      font-size: 13.5px;
+      color: var(--text-dim);
+      line-height: 1.8;
+      text-align: center;
+    }
+    .phase-kpi {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line-gold);
+      font-size: 12px;
+      color: var(--bund-gold-300);
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+    @media (max-width: 900px) {
+      .timeline::before { display: none; }
+      .timeline-row { grid-template-columns: 1fr; }
+      .phase-dot, .phase-num { display: none; }
+      .phase { padding-top: 20px; border-left: 1px solid var(--line-gold); padding-left: 28px; }
+      .phase-years, .phase-title, .phase-body, .phase-kpi { text-align: left; }
+    }
+
+    /* ============ 双中心选址 ============ */
+    .sites-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-top: 60px;
+    }
+    .site-card {
+      padding: 44px 38px;
+      border: 1px solid var(--line-gold);
+      background: var(--surface);
+      position: relative;
+      transition: all 0.4s;
+    }
+    .site-card:hover {
+      border-color: var(--bund-gold-500);
+      transform: translateY(-4px);
+    }
+    .site-tag {
+      display: inline-block;
+      padding: 5px 14px;
+      background: var(--bund-gold-500);
+      color: var(--sj-blue-950);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      font-weight: 700;
+      margin-bottom: 22px;
+      text-transform: uppercase;
+    }
+    .site-name {
+      font-family: var(--serif);
+      font-size: 26px;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 8px;
-      line-height: 1.5;
     }
-
-    .scenario-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
+    .site-role {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--bund-gold-300);
+      margin-bottom: 20px;
+    }
+    .site-body {
+      font-size: 14px;
+      color: var(--text-dim);
       line-height: 1.9;
-      font-weight: 300;
+      margin-bottom: 24px;
     }
-
-    .scenario-meta {
-      display: flex;
-      gap: 20px;
-      margin-top: 14px;
-      font-size: 12px;
-      color: var(--text-muted);
+    .site-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line-gold);
     }
-
-    .scenario-meta span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      background: var(--blue-50);
-      border-radius: 20px;
-      transition: all 0.3s;
-    }
-
-    .scenario-meta span:hover {
-      background: var(--blue-100);
-      color: var(--blue-700);
-    }
-
-    /* ==================== Steps Progress ==================== */
-    .steps-bar {
-      display: flex;
-      padding: 20px 36px;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
-      background: var(--gradient-subtle);
-      align-items: center;
-    }
-
-    .step-item {
-      flex: 1;
-      text-align: center;
-      padding: 14px 8px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      background: white;
-      color: var(--text-muted);
-      position: relative;
-      border: 1px solid var(--border);
-      cursor: default;
-    }
-
-    .step-item .step-num {
+    .ss-num {
+      font-family: var(--serif);
       font-size: 22px;
       font-weight: 700;
-      display: block;
-      font-family: 'Noto Serif SC', serif;
-      line-height: 1.2;
+      color: var(--bund-gold-300);
     }
-
-    .step-item .step-label {
-      display: block;
+    .ss-label {
+      font-size: 11.5px;
+      color: var(--text-mute);
       margin-top: 4px;
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: 1px;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 768px) {
+      .sites-grid { grid-template-columns: 1fr; }
     }
 
-    .step-item .step-rule {
-      display: block;
-      margin-top: 3px;
-      font-weight: 300;
-      font-size: 10px;
-      opacity: 0.7;
-      letter-spacing: 0.5px;
+    /* ============ 四校产学研 ============ */
+    .school-section {
+      position: relative;
     }
-
-    .step-item.active {
-      background: var(--gradient-main);
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35);
-      transform: translateY(-2px) scale(1.02);
+    .schools-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 60px;
     }
-
-    .step-item.active .step-rule { opacity: 1; }
-
-    .step-item.done {
-      background: linear-gradient(135deg, #059669, #10b981);
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    .school-card {
+      padding: 36px 28px;
+      border: 1px solid var(--line-gold);
+      background: var(--surface);
+      position: relative;
+      transition: all 0.4s;
     }
-
-    .step-connector {
-      display: flex;
-      align-items: center;
-      color: var(--blue-300);
-      font-size: 14px;
-      font-weight: 300;
-      flex-shrink: 0;
+    .school-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid var(--bund-gold-500);
+      transform: translateX(-50%);
     }
-
-    /* ==================== Chat Area ==================== */
-    .chat-area {
-      height: 420px;
-      overflow-y: auto;
-      padding: 28px 36px;
-      background: linear-gradient(180deg, var(--blue-50) 0%, #f8faff 50%, white 100%);
-      scroll-behavior: smooth;
+    .school-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--bund-gold-500);
     }
-
-    .chat-area::-webkit-scrollbar { width: 5px; }
-    .chat-area::-webkit-scrollbar-track { background: transparent; }
-    .chat-area::-webkit-scrollbar-thumb { background: var(--blue-200); border-radius: 10px; }
-    .chat-area::-webkit-scrollbar-thumb:hover { background: var(--blue-300); }
-
-    .message {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      animation: msgIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message.user { flex-direction: row-reverse; }
-
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .school-name {
+      font-family: var(--serif);
       font-size: 22px;
-      flex-shrink: 0;
-      background: white;
-      box-shadow: var(--shadow-sm);
-      border: 2px solid var(--blue-100);
-      transition: transform 0.3s;
-    }
-
-    .message:hover .avatar { transform: scale(1.05); }
-
-    .bubble {
-      max-width: 72%;
-      padding: 14px 20px;
-      border-radius: var(--radius);
-      font-size: 14px;
-      line-height: 1.85;
-      transition: box-shadow 0.3s;
-    }
-
-    .message:not(.user) .bubble {
-      background: white;
-      color: var(--text);
-      border-bottom-left-radius: 4px;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
-    }
-
-    .message:not(.user) .bubble:hover { box-shadow: var(--shadow-md); }
-
-    .message.user .bubble {
-      background: var(--gradient-main);
-      color: white;
-      border-bottom-right-radius: 4px;
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
-    }
-
-    /* ==================== Feedback ==================== */
-    .feedback-bubble {
-      max-width: 85%;
-      margin: -12px 0 20px 54px;
-      animation: feedbackIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes feedbackIn {
-      from { opacity: 0; transform: translateY(8px) scale(0.97); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .feedback-pass {
-      background: var(--success-light);
-      border: 1px solid #a7f3d0;
-      border-radius: var(--radius-sm);
-      padding: 14px 18px;
-      font-size: 13px;
-      color: #065f46;
-      line-height: 1.8;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feedback-pass::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px; height: 100%;
-      background: var(--success);
-      border-radius: 4px 0 0 4px;
-    }
-
-    .feedback-fail {
-      background: var(--danger-light);
-      border: 1px solid #fecaca;
-      border-radius: var(--radius-sm);
-      padding: 14px 18px;
-      font-size: 13px;
-      color: #991b1b;
-      line-height: 1.8;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feedback-fail::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px; height: 100%;
-      background: var(--danger);
-      border-radius: 4px 0 0 4px;
-    }
-
-    .feedback-bubble .label {
       font-weight: 700;
+      color: var(--text);
       margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+    .school-tag {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
       font-size: 14px;
+      color: var(--bund-gold-300);
+      margin-bottom: 18px;
     }
-
-    .emotion-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 14px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 500;
-      margin-top: 10px;
-      background: white;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      transition: all 0.3s;
+    .school-list {
+      list-style: none;
     }
-
-    .emotion-tag:hover { border-color: var(--blue-300); }
-
-    /* ==================== Input Area ==================== */
-    .input-area {
-      padding: 20px 36px;
-      border-top: 1px solid var(--border);
-      background: white;
-      display: flex;
-      gap: 12px;
-      align-items: flex-end;
-    }
-
-    .input-area textarea {
-      flex: 1;
-      border: 2px solid var(--blue-100);
-      border-radius: var(--radius-sm);
-      padding: 12px 18px;
-      font-size: 14px;
-      resize: none;
-      outline: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      font-family: inherit;
-      line-height: 1.6;
-      min-height: 50px;
-      max-height: 120px;
-      background: var(--blue-50);
-      color: var(--text);
-    }
-
-    .input-area textarea:focus {
-      border-color: var(--blue-400);
-      background: white;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
-    }
-
-    .input-area textarea::placeholder { color: var(--text-muted); }
-
-    .send-btn {
-      background: var(--gradient-main);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 13px 26px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      font-family: inherit;
-      white-space: nowrap;
-      letter-spacing: 1px;
+    .school-list li {
+      font-size: 13px;
+      color: var(--text-dim);
+      padding: 7px 0 7px 16px;
       position: relative;
-      overflow: hidden;
+      line-height: 1.6;
+      border-bottom: 1px dashed var(--line-gold);
     }
-
-    .send-btn::after {
+    .school-list li:last-child { border-bottom: none; }
+    .school-list li::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.5s;
+      left: 0; top: 14px;
+      width: 8px; height: 1px;
+      background: var(--bund-gold-500);
+    }
+    @media (max-width: 900px) {
+      .schools-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .schools-grid { grid-template-columns: 1fr; }
     }
 
-    .send-btn:hover::after { transform: translateX(100%); }
-
-    .send-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+    /* ============ 财务测算 ============ */
+    .finance-section {
+      background: linear-gradient(180deg, transparent 0%, rgba(11, 35, 73, 0.55) 30%, rgba(11, 35, 73, 0.55) 70%, transparent 100%);
     }
-
-    .send-btn:active { transform: translateY(0); }
-
-    .send-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* ==================== Loading ==================== */
-    .loading-screen {
-      display: flex;
-      flex-direction: column;
+    .finance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
       align-items: center;
-      justify-content: center;
-      padding: 80px 36px;
-      text-align: center;
-      background: linear-gradient(180deg, var(--blue-50) 0%, white 100%);
-      min-height: 360px;
+      margin-top: 50px;
+    }
+    @media (max-width: 1024px) {
+      .finance-grid { grid-template-columns: 1fr; }
     }
 
-    .loading-spinner {
-      width: 44px;
-      height: 44px;
-      border: 3px solid var(--blue-100);
-      border-top-color: var(--blue-500);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 20px;
+    .fin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
     }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-text {
-      font-size: 15px;
-      color: var(--text-secondary);
-      font-weight: 400;
+    .fin-table th, .fin-table td {
+      padding: 18px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line-gold);
     }
-
-    .loading-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 8px;
-      font-weight: 300;
-    }
-
-    .loading-dots::after {
-      content: '';
-      animation: dots 1.5s infinite;
-    }
-
-    @keyframes dots {
-      0%, 20% { content: '.'; }
-      40% { content: '..'; }
-      60%, 100% { content: '...'; }
-    }
-
-    /* ==================== Completion ==================== */
-    .completion-banner {
-      text-align: center;
-      padding: 48px 36px;
-      animation: completionIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes completionIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .completion-icon {
-      width: 80px;
-      height: 80px;
-      background: var(--gradient-main);
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .completion-banner h2 {
-      font-family: 'Noto Serif SC', serif;
-      font-size: 24px;
-      color: var(--text);
-      margin-bottom: 14px;
+    .fin-table th {
+      font-family: var(--serif);
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      color: var(--bund-gold-300);
+      text-transform: uppercase;
       font-weight: 700;
+      padding-bottom: 14px;
+    }
+    .fin-table tbody tr:hover { background: rgba(201, 162, 90, 0.04); }
+    .fin-table td:first-child {
+      font-weight: 500;
+      color: var(--text);
+    }
+    .fin-table td.num {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      color: var(--bund-gold-200);
+      font-size: 16px;
     }
 
-    .completion-banner p {
-      color: var(--text-secondary);
+    .fin-callouts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .callout {
+      padding: 26px 22px;
+      border: 1px solid var(--line-gold);
+      background: var(--surface);
+    }
+    .callout-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 36px;
+      color: var(--bund-gold-300);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .callout-label {
+      font-size: 13px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    /* ============ 五大判断 / 六大建议 ============ */
+    .judgements {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 60px;
+    }
+    .judge {
+      padding: 32px 28px;
+      border: 1px solid var(--line-gold);
+      background: var(--surface);
+      position: relative;
+      transition: all 0.4s;
+    }
+    .judge:hover { border-color: var(--bund-gold-500); background: var(--surface-strong); }
+    .judge-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
       font-size: 14px;
-      line-height: 2;
-      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: var(--bund-gold-400);
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
-
-    .completion-banner strong {
-      color: var(--blue-600);
-      font-weight: 600;
+    .judge-title {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.45;
     }
-
-    .restart-btn {
-      margin-top: 24px;
-      background: var(--gradient-main);
-      color: white;
-      border: none;
-      border-radius: 28px;
-      padding: 14px 40px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      font-family: inherit;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
-    }
-
-    .restart-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(59, 130, 246, 0.35);
-    }
-
-    /* ==================== Demo Banner ==================== */
-    .demo-banner {
-      background: linear-gradient(135deg, #eff6ff, #ecfeff);
-      border: 1px solid var(--blue-200);
-      border-radius: var(--radius-sm);
-      padding: 14px 20px;
-      margin: 16px 36px;
-      font-size: 12px;
-      color: var(--blue-800);
-      text-align: center;
+    .judge-body {
+      font-size: 13.5px;
+      color: var(--text-dim);
       line-height: 1.8;
-      animation: fadeIn 0.5s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    /* ============ CTA + Footer ============ */
+    .cta-section {
+      padding: 120px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+    .cta-frame {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 70px 50px;
+      border: 1px solid var(--line-gold-strong);
+      background: linear-gradient(135deg, rgba(11, 35, 73, 0.85), rgba(5, 13, 30, 0.85));
+      position: relative;
+    }
+    .cta-frame::before, .cta-frame::after {
+      content: '';
+      position: absolute;
+      width: 60px; height: 60px;
+      border: 1px solid var(--bund-gold-500);
+    }
+    .cta-frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .cta-frame::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+    .cta-title {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3.6vw, 44px);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 18px;
+    }
+    .cta-title .accent {
+      background: linear-gradient(135deg, var(--bund-gold-200), var(--bund-gold-500));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .cta-sub {
+      font-size: 16px;
+      color: var(--text-dim);
+      margin-bottom: 36px;
+      line-height: 1.9;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    /* ==================== Responsive ==================== */
-    @media (max-width: 600px) {
-      body { padding: 0; }
-      .container { border-radius: 0; border: none; min-height: 100vh; box-shadow: none; }
-      .header { padding: 24px 20px 20px; }
-      .header-brand { font-size: 22px; letter-spacing: 2px; }
-      .scenario-card, .input-area, .chat-area, .steps-bar { padding-left: 16px; padding-right: 16px; }
-      .scenario-card::before { display: none; }
-      .config-panel.show { padding: 20px 16px; }
-      .bubble { max-width: 84%; }
-      .feedback-bubble { margin-left: 44px; }
-      .step-item .step-num { font-size: 18px; }
-      .step-item { padding: 10px 4px; }
-      body::before, body::after { display: none; }
+    footer {
+      border-top: 1px solid var(--line-gold);
+      padding: 50px 0 30px;
+      margin-top: 80px;
+      position: relative;
+      z-index: 2;
+      background: rgba(5, 13, 30, 0.85);
     }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-brand { max-width: 380px; }
+    .footer-brand .brand { margin-bottom: 18px; }
+    .footer-tagline {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.85;
+    }
+    .footer-col h4 {
+      font-family: var(--serif);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--bund-gold-300);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .footer-col li {
+      list-style: none;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 2;
+    }
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid var(--line-gold);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11.5px;
+      color: var(--text-mute);
+      letter-spacing: 0.08em;
+    }
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ============ Han Xizai 装饰条 ============ */
+    .scroll-decor {
+      position: relative;
+      padding: 40px 0 20px;
+    }
+    .scroll-decor svg {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      display: block;
+      opacity: 0.7;
+    }
+
+    /* ============ 滚动渐显 ============ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 选区颜色 */
+    ::selection {
+      background: var(--bund-gold-500);
+      color: var(--sj-blue-950);
+    }
+    /* 滚动条 */
+    ::-webkit-scrollbar { width: 10px; background: var(--sj-blue-950); }
+    ::-webkit-scrollbar-thumb { background: var(--sj-blue-700); border: 2px solid var(--sj-blue-950); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--bund-gold-700); }
   </style>
 </head>
 <body>
+
+<!-- 全局电路板纹理背景（集成电路母题） -->
+<svg class="circuit-bg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1600 900">
+  <defs>
+    <pattern id="circuitPattern" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#c9a25a" stroke-width="0.6" opacity="0.55">
+        <path d="M0 40 L60 40 L80 60 L80 120 L120 120 L160 120"/>
+        <path d="M0 120 L40 120 L60 100 L60 60 L100 60 L160 60"/>
+        <path d="M40 0 L40 30 L70 30"/>
+        <path d="M120 0 L120 50 L100 70"/>
+        <path d="M40 160 L40 140 L80 140"/>
+        <circle cx="40" cy="40" r="2.6" fill="#c9a25a"/>
+        <circle cx="80" cy="60" r="2.2" fill="#c9a25a"/>
+        <circle cx="80" cy="120" r="2.6" fill="#c9a25a"/>
+        <circle cx="120" cy="120" r="2.2" fill="#c9a25a"/>
+        <circle cx="60" cy="100" r="2.2" fill="#c9a25a"/>
+        <circle cx="100" cy="60" r="2.6" fill="#c9a25a"/>
+        <rect x="64" y="24" width="12" height="12" stroke="#c9a25a" fill="none"/>
+        <rect x="104" y="104" width="14" height="14" stroke="#c9a25a" fill="none"/>
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#circuitPattern)"/>
+</svg>
+
+<!-- 导航 -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand" style="text-decoration:none">
+      <svg class="brand-mark" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="markGold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#e6c98a"/>
+            <stop offset="1" stop-color="#8a6f33"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="38" height="38" fill="none" stroke="url(#markGold)" stroke-width="1"/>
+        <rect x="7" y="7" width="28" height="28" fill="none" stroke="url(#markGold)" stroke-width="0.6"/>
+        <path d="M11 28 L11 18 L17 14 L17 28 Z M19 28 L19 12 L24 9 L24 28 Z M26 28 L26 16 L31 14 L31 28 Z"
+              fill="url(#markGold)" opacity="0.95"/>
+        <line x1="9" y1="31" x2="33" y2="31" stroke="url(#markGold)" stroke-width="1"/>
+      </svg>
+      <div class="brand-text">
+        <div class="brand-cn">上海文化数字交易所</div>
+        <div class="brand-en">Shanghai Cultural Digital Exchange · SHCDX</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#vision">愿景</a></li>
+      <li><a href="#policy">政策窗口</a></li>
+      <li><a href="#infra">四层架构</a></li>
+      <li><a href="#scdi">SCDI 指数</a></li>
+      <li><a href="#phases">阶段战略</a></li>
+      <li><a href="#sites">双中心</a></li>
+      <li><a href="#schools">产学研</a></li>
+      <li><a href="#finance">财务</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">恳切建议 →</a>
+  </div>
+</nav>
+
+<!-- ============ Hero ============ -->
+<section class="hero" id="top">
   <div class="container">
-    <div class="header">
-      <div class="header-brand">NVC &middot; 非暴力沟通训练</div>
-      <div class="header-sub">观察 &middot; 感受 &middot; 需要 &middot; 请求</div>
-      <div class="header-actions">
-        <button class="header-btn" id="btnConfig" onclick="toggleConfig()">AI 模型</button>
-        <button class="header-btn" id="btnNewScene" onclick="generateNewScenario()">换一个场景</button>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">
+          <span class="dot"></span>
+          <span>项目白皮书 · 2026年4月</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="stack">合规<span class="gold">·</span>定价<span class="gold">·</span>出海</span>
+          <span class="stack"><span class="gold">面向 AI 元宇宙</span></span>
+          <span class="stack">的数字资产基础设施</span>
+        </h1>
+        <div class="hero-en">Shanghai Cultural Digital Exchange · Feasibility Roadshow</div>
+        <p class="hero-desc">
+          上海某某文化数字交易所（暂定名，注册资本 1 亿元）以「Trust · Price · Liquidity · Application」四层基础设施为骨架，对标上海金（SGE）建设上海文化数字资产指数 <strong style="color:var(--bund-gold-300)">SCDI</strong>，把文化数字资产升级为可生成、可训练、可交互、可运营的数字生产资料。
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">1 亿元</div>
+            <div class="stat-label">注册资本</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">800 亿元</div>
+            <div class="stat-label">引领期年交易额目标</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">2026 — 2035</div>
+            <div class="stat-label">十年战略测算周期</div>
+          </div>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="#vision" class="btn-primary">查看项目白皮书 <span>→</span></a>
+          <a href="#contact" class="btn-ghost">恳切建议清单</a>
+        </div>
       </div>
-      <div class="api-status" id="apiStatus">
-        <span class="status-dot" id="statusDot"></span>
-        <span id="statusText">检测中...</span>
+
+      <!-- 浦江天际线 SVG 插画 -->
+      <div class="hero-art">
+        <svg viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0e2f63"/>
+              <stop offset="1" stop-color="#050d1e"/>
+            </linearGradient>
+            <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e6c98a"/>
+              <stop offset="0.5" stop-color="#c9a25a"/>
+              <stop offset="1" stop-color="#8a6f33"/>
+            </linearGradient>
+            <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stop-color="#f1ddae" stop-opacity="0.55"/>
+              <stop offset="1" stop-color="#f1ddae" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- 圆形画框 -->
+          <circle cx="280" cy="280" r="260" fill="url(#skyGrad)" stroke="url(#goldFill)" stroke-width="1.2"/>
+          <circle cx="280" cy="280" r="250" fill="none" stroke="url(#goldFill)" stroke-width="0.4" opacity="0.6"/>
+
+          <!-- 月亮 -->
+          <circle cx="420" cy="160" r="60" fill="url(#moonGlow)"/>
+          <circle cx="420" cy="160" r="30" fill="#f1ddae" opacity="0.85"/>
+
+          <!-- 远景：黄浦江水波纹 -->
+          <g opacity="0.45" stroke="url(#goldFill)" stroke-width="0.4" fill="none">
+            <path d="M40 420 Q100 415 160 420 T280 420 T400 420 T520 420"/>
+            <path d="M40 440 Q100 435 160 440 T280 440 T400 440 T520 440"/>
+            <path d="M40 460 Q100 455 160 460 T280 460 T400 460 T520 460"/>
+            <path d="M40 480 Q100 475 160 480 T280 480 T400 480 T520 480"/>
+          </g>
+
+          <!-- 外滩（左侧）：万国建筑群剪影 -->
+          <g fill="url(#goldFill)">
+            <rect x="40" y="350" width="14" height="60"/>
+            <rect x="56" y="320" width="20" height="90"/>
+            <polygon points="66,310 76,320 56,320"/>
+            <rect x="80" y="340" width="16" height="70"/>
+            <rect x="100" y="300" width="22" height="110"/>
+            <polygon points="111,288 122,300 100,300"/>
+            <rect x="106" y="270" width="6" height="22"/>
+            <rect x="128" y="330" width="18" height="80"/>
+            <rect x="150" y="350" width="14" height="60"/>
+            <rect x="166" y="310" width="20" height="100"/>
+            <rect x="172" y="290" width="8" height="22"/>
+            <rect x="190" y="345" width="14" height="65"/>
+          </g>
+
+          <!-- 浦江（中段水面） -->
+          <rect x="40" y="410" width="480" height="42" fill="#050d1e" opacity="0.6"/>
+
+          <!-- 浦东（右侧）：东方明珠 + 金茂 + 环球 + 上海中心 -->
+          <g fill="url(#goldFill)">
+            <!-- 东方明珠 -->
+            <line x1="305" y1="120" x2="305" y2="410" stroke="url(#goldFill)" stroke-width="2.4"/>
+            <circle cx="305" cy="180" r="22"/>
+            <circle cx="305" cy="180" r="20" fill="#050d1e"/>
+            <circle cx="305" cy="180" r="14" fill="url(#goldFill)"/>
+            <circle cx="305" cy="260" r="14"/>
+            <circle cx="305" cy="260" r="11" fill="#050d1e"/>
+            <circle cx="305" cy="260" r="7" fill="url(#goldFill)"/>
+            <polygon points="305,98 297,120 313,120"/>
+            <!-- 上海中心 -->
+            <path d="M360 410 L360 130 Q380 120 400 130 L400 410 Z"/>
+            <rect x="360" y="410" width="40" height="4"/>
+            <polygon points="380,108 372,130 388,130"/>
+            <!-- 金茂 -->
+            <polygon points="420,410 420,200 432,170 444,200 444,410"/>
+            <rect x="426" y="160" width="12" height="14"/>
+            <polygon points="432,140 426,160 438,160"/>
+            <!-- 环球金融中心 -->
+            <polygon points="470,410 470,210 510,180 510,410"/>
+            <rect x="472" y="220" width="36" height="14" fill="#050d1e"/>
+            <!-- 网格细节 -->
+            <g stroke="#050d1e" stroke-width="0.5">
+              <line x1="360" y1="220" x2="400" y2="220"/>
+              <line x1="360" y1="260" x2="400" y2="260"/>
+              <line x1="360" y1="300" x2="400" y2="300"/>
+              <line x1="360" y1="340" x2="400" y2="340"/>
+              <line x1="360" y1="380" x2="400" y2="380"/>
+            </g>
+          </g>
+
+          <!-- 韩熙载夜宴图风格屏风装饰 -->
+          <g opacity="0.55" fill="none" stroke="url(#goldFill)" stroke-width="0.5">
+            <rect x="218" y="350" width="64" height="58"/>
+            <line x1="234" y1="350" x2="234" y2="408"/>
+            <line x1="250" y1="350" x2="250" y2="408"/>
+            <line x1="266" y1="350" x2="266" y2="408"/>
+            <path d="M220 358 Q230 354 240 358 T260 358 T280 358"/>
+            <path d="M220 372 Q230 368 240 372 T260 372 T280 372"/>
+            <path d="M220 386 Q230 382 240 386 T260 386 T280 386"/>
+            <path d="M220 398 Q230 394 240 398 T260 398 T280 398"/>
+          </g>
+
+          <!-- 集成电路纹理 - 圆形外环 -->
+          <g fill="none" stroke="url(#goldFill)" stroke-width="0.5" opacity="0.55">
+            <circle cx="280" cy="280" r="240"/>
+            <g transform="translate(280 280)">
+              <line x1="0" y1="-258" x2="0" y2="-244"/>
+              <line x1="0" y1="244" x2="0" y2="258"/>
+              <line x1="-258" y1="0" x2="-244" y2="0"/>
+              <line x1="244" y1="0" x2="258" y2="0"/>
+              <line x1="-180" y1="-180" x2="-170" y2="-170"/>
+              <line x1="180" y1="-180" x2="170" y2="-170"/>
+              <line x1="-180" y1="180" x2="-170" y2="170"/>
+              <line x1="180" y1="180" x2="170" y2="170"/>
+            </g>
+          </g>
+
+          <!-- 角部刻度 -->
+          <g fill="url(#goldFill)" opacity="0.85">
+            <text x="50" y="60" font-family="Cormorant Garamond" font-size="11" letter-spacing="2">SHCDX</text>
+            <text x="450" y="60" font-family="Cormorant Garamond" font-size="11" letter-spacing="2">SCDI</text>
+            <text x="50" y="510" font-family="Cormorant Garamond" font-size="11" letter-spacing="2">31°14′N</text>
+            <text x="430" y="510" font-family="Cormorant Garamond" font-size="11" letter-spacing="2">121°28′E</text>
+          </g>
+        </svg>
       </div>
     </div>
 
-    <div class="config-panel" id="configPanel">
-      <div class="config-grid">
-        <div class="config-field">
-          <label>运行模式</label>
-          <select id="runMode" onchange="switchRunMode()">
-            <option value="local">本地模式（静态场景）</option>
-            <option value="api">AI 模式（Serverless 网关）</option>
-          </select>
-        </div>
-        <div class="config-field">
-          <label>AI 模型服务</label>
-          <select id="apiProvider" onchange="switchProvider()">
-            <!-- Options populated dynamically from backend config / chat health check -->
-          </select>
-        </div>
-        <div class="config-note">
-          AI 服务由服务端安全代理调用，API Key 存储在服务器环境变量中，不会暴露给浏览器。
-        </div>
+    <!-- 四大战略定位 -->
+    <div class="pillars reveal" style="margin-top:90px">
+      <div class="pillar">
+        <div class="pillar-num">— 01 —</div>
+        <div class="pillar-title">合规</div>
+        <div class="pillar-desc">严守 38 号文与《生成式人工智能服务管理暂行办法》红线，对标 SDX / ADDX / HashKey 合规标杆。</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">— 02 —</div>
+        <div class="pillar-title">专业</div>
+        <div class="pillar-desc">以 GB/T 46353-2025 与 GB/T 46843-2025 国标为基线，首批国家标准应用机构。</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">— 03 —</div>
+        <div class="pillar-title">科技</div>
+        <div class="pillar-desc">长安链 + BSN-DDC + zkML + 意图交易 + 200 EFLOPS 智算底座，AI 原生经济操作系统。</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">— 04 —</div>
+        <div class="pillar-title">国际</div>
+        <div class="pillar-desc">FT 账户 · mBridge · Project Ensemble · Project Agorá，沪港双中心 + 全球四节点。</div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div id="mainContent">
-      <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">正在准备训练场景<span class="loading-dots"></span></div>
-        <div class="loading-sub">连接 AI 服务中</div>
+<!-- ============ 愿景 / 战略定位 ============ -->
+<section class="section" id="vision">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Vision · 战略愿景</div>
+      <h2 class="section-title">面向 AI 时代的<span class="accent">数字资产形成、定价与运营基础设施</span></h2>
+      <p class="section-subtitle">
+        本项目讨论的不是一个普通"数字藏品市场"，也不是简单把文化作品搬到网上交易。它要解决的是：当文化内容、数据、模型、数字人、数字孪生空间和 AI Agent 都可以被确权、估值、调用和结算时，上海是否应当率先建设一套可信的数字资产基础设施。
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px" class="reveal">
+      <div class="card">
+        <span class="card-corner tl"></span><span class="card-corner tr"></span>
+        <span class="card-corner bl"></span><span class="card-corner br"></span>
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:0.2em;color:var(--bund-gold-400);margin-bottom:14px">VISION</div>
+        <h3 style="font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:14px;line-height:1.4">建设全球文化数字贸易枢纽</h3>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.85">依托上海全球数字贸易枢纽与国际文化大都市优势，打造合规引领、科技赋能的文化数字资产交易标杆，承载中华文化数字化出海。</p>
+      </div>
+      <div class="card">
+        <span class="card-corner tl"></span><span class="card-corner tr"></span>
+        <span class="card-corner bl"></span><span class="card-corner br"></span>
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:0.2em;color:var(--bund-gold-400);margin-bottom:14px">MISSION</div>
+        <h3 style="font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:14px;line-height:1.4">规范秩序 · 激活价值</h3>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.85">规范文化数字资产交易秩序、激活价值潜力，推动文化产业与数字技术、金融服务深度融合，履行社会责任。</p>
+      </div>
+      <div class="card">
+        <span class="card-corner tl"></span><span class="card-corner tr"></span>
+        <span class="card-corner bl"></span><span class="card-corner br"></span>
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:0.2em;color:var(--bund-gold-400);margin-bottom:14px">VALUES</div>
+        <h3 style="font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:14px;line-height:1.4">合规为基 · 科技为核</h3>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.85">秉持"合规为基、科技为核、生态为魂、开放共赢"，兼顾专业性与公益性、创新性与稳健性。</p>
+      </div>
+      <div class="card">
+        <span class="card-corner tl"></span><span class="card-corner tr"></span>
+        <span class="card-corner bl"></span><span class="card-corner br"></span>
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:0.2em;color:var(--bund-gold-400);margin-bottom:14px">POSITION</div>
+        <h3 style="font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:14px;line-height:1.4">AI 元宇宙产业基础设施</h3>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.85">资产 = 权属凭证 + 可调用模型 + 交互能力 + 行为数据 + 收益流——升级为可生成、可训练、可交互、可运营的数字生产资料。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 装饰带：韩熙载夜宴图风格屏风 ============ -->
+<div class="scroll-decor">
+  <svg viewBox="0 0 540 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="decorGold" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#c9a25a" stop-opacity="0"/>
+        <stop offset="0.5" stop-color="#c9a25a" stop-opacity="1"/>
+        <stop offset="1" stop-color="#c9a25a" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="0" y1="25" x2="540" y2="25" stroke="url(#decorGold)" stroke-width="0.6"/>
+    <g transform="translate(270 25)" stroke="#c9a25a" fill="none" stroke-width="0.8">
+      <!-- 中心：屏风 -->
+      <rect x="-50" y="-18" width="100" height="36"/>
+      <line x1="-25" y1="-18" x2="-25" y2="18"/>
+      <line x1="0" y1="-18" x2="0" y2="18"/>
+      <line x1="25" y1="-18" x2="25" y2="18"/>
+      <!-- 屏风内的山水波纹 -->
+      <path d="M-46 0 Q-37 -6 -28 0 T-12 0" opacity="0.65"/>
+      <path d="M-22 0 Q-13 -6 -4 0 T12 0" opacity="0.65"/>
+      <path d="M2 0 Q11 -6 20 0 T36 0" opacity="0.65"/>
+      <path d="M28 0 Q37 -6 46 0" opacity="0.65"/>
+      <!-- 两侧菱形 -->
+      <g transform="translate(-90 0)"><polygon points="0,-6 6,0 0,6 -6,0"/></g>
+      <g transform="translate(90 0)"><polygon points="0,-6 6,0 0,6 -6,0"/></g>
+    </g>
+  </svg>
+</div>
+
+<!-- ============ 政策窗口 ============ -->
+<section class="section" id="policy">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Policy Window · 政策窗口</div>
+      <h2 class="section-title">自 2011 年 38 号文以来<br><span class="accent">历史性叠加的顶层窗口</span></h2>
+      <p class="section-subtitle">
+        "十五五"规划纲要、GB/T 双国标、国家数据局 2025 三文件、上海"一中心六平台"与临港十五条，共同构成文化数字资产交易领域最完整、最直接可操作的政策窗口期。
+      </p>
+    </div>
+
+    <div class="policy-grid reveal">
+      <div class="policy-card">
+        <div class="year">2026.3</div>
+        <div class="pc-title">"十五五"规划纲要</div>
+        <p class="pc-body">第三十五章首次将<strong style="color:var(--bund-gold-300)">微短剧</strong>写入国家五年规划；第十四章明确"优化数据交易机构布局"、"建立数据要素价格形成机制"；第三十六章明列网文 / 网游 / 影视动漫 / 精品展览四大出海品类。</p>
+      </div>
+      <div class="policy-card">
+        <div class="year">2026.5</div>
+        <div class="pc-title">GB/T 46353 / 46843 国标</div>
+        <p class="pc-body">中国首个数据资产价值评估国家标准 2026 年 5 月 1 日实施，与 GB/T 46843《资产管理 文化数字资产价值评估指南》形成"母标准 + 领域指南"组合，为交易所估值业务提供国标依据。</p>
+      </div>
+      <div class="policy-card">
+        <div class="year">2025</div>
+        <div class="pc-title">国家数据局"三文件"</div>
+        <p class="pc-body">《公共数据资源登记管理暂行办法》《授权运营实施规范》《价格形成机制通知》——确立"国家—省—行业"三级管理架构，完成公共文化数据授权运营制度基座。</p>
+      </div>
+      <div class="policy-card">
+        <div class="year">沪</div>
+        <div class="pc-title">上海一中心六平台</div>
+        <p class="pc-body">《上海市贯彻落实国家文化数字化战略的实施方案》构建"上海数字文创智算中心 + 六平台"，推进"千帆出海"工程；目标 2029 年数字交付服务贸易 1,300 亿美元。</p>
+      </div>
+      <div class="policy-card">
+        <div class="year">临</div>
+        <div class="pc-title">临港十五条 · FT 账户</div>
+        <p class="pc-body">"临十五条"有效期覆盖 2026—2027，国际数据加工枢纽 + 国际数据专线"团购"+ 数据跨境一般数据清单 + FT 账户离岸结算综改试点四件套齐备。</p>
+      </div>
+      <div class="policy-card">
+        <div class="year">BIS</div>
+        <div class="pc-title">国际跨境清算窗口</div>
+        <p class="pc-body">BIS Project Agorá（7 央行 + 41 私营机构，2025 Q4 测试）；mBridge（中国事实主导技术标准）；HKMA Project Ensemble（2025.11.13 EnsembleTX）为人民币跨境代币化结算打开战略通道。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 四层基础设施 ============ -->
+<section class="section infra-section" id="infra">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Four-Layer Infrastructure · 平台解决方案</div>
+      <h2 class="section-title">Trust · Price · Liquidity · <span class="accent">Application</span><br>四层基础设施重构行业</h2>
+      <p class="section-subtitle">
+        针对权属界定、估值缺失、交易不规范、科技应用浅、跨境壁垒五大行业痛点，构建"信任共识层 — 价格发现层 — 流动性层 — 应用层"的闭环架构。
+      </p>
+    </div>
+
+    <div class="infra-stack reveal">
+      <!-- Trust -->
+      <div class="infra-layer">
+        <div class="layer-num">01</div>
+        <div class="layer-content">
+          <div class="layer-name">Trust Layer · 信任 / 确权层</div>
+          <div class="layer-en">Consensus & Provenance</div>
+          <div class="layer-desc">联盟链 + 国家版权局 DCI 体系 + CN-DBpedia 知识图谱 + DID 可验证数字身份；为权属模糊、AIGC 时代权属复杂提供"创作即登记、登记即上链、上链即可交易"的可信根基。</div>
+          <div class="layer-tags">
+            <span class="tag">长安链 ChainMaker</span><span class="tag">BSN-DDC</span><span class="tag">DCI</span><span class="tag">CN-DBpedia</span><span class="tag">ERC-4337 / DID</span>
+          </div>
+        </div>
+        <div class="layer-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M16 3 L28 9 V18 C28 24 22 28 16 30 C10 28 4 24 4 18 V9 Z"/>
+            <path d="M11 16 L15 20 L22 12"/>
+          </svg>
+        </div>
       </div>
 
-      <div id="appContent" style="display:none;">
-        <div class="scenario-card" id="scenarioCard">
-          <div class="scenario-label">训练场景</div>
-          <div class="scenario-title" id="scenarioTitle">--</div>
-          <div class="scenario-desc" id="scenarioDesc">--</div>
-          <div class="scenario-meta">
-            <span id="metaRole">--</span>
-            <span id="metaGoal">--</span>
+      <!-- Price Discovery -->
+      <div class="infra-layer">
+        <div class="layer-num">02</div>
+        <div class="layer-content">
+          <div class="layer-name">Price Discovery Layer · 价格发现层</div>
+          <div class="layer-en">Index & AI Valuation</div>
+          <div class="layer-desc">方法论国标化 + 模型 AI 化 + 过程可验证 + 竞价中心化——发布 SCDI 上海文化数字资产指数；每日 14:00 集中竞价；Upshot / NFTBank 范式 AI 估值 + 复旦 IIPL CFFF 算力 + zkML 链上可验证估值。</div>
+          <div class="layer-tags">
+            <span class="tag">SCDI 指数</span><span class="tag">集中竞价</span><span class="tag">AI 估值引擎</span><span class="tag">zkML</span><span class="tag">做市商制度</span>
           </div>
         </div>
+        <div class="layer-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M4 24 L11 17 L16 21 L22 12 L28 6"/>
+            <path d="M22 6 L28 6 L28 12"/>
+            <line x1="4" y1="28" x2="28" y2="28"/>
+          </svg>
+        </div>
+      </div>
 
-        <div class="steps-bar">
-          <div class="step-item active" id="step1">
-            <span class="step-num">1</span>
-            <span class="step-label">观察</span>
-            <span class="step-rule">不评判</span>
-          </div>
-          <div class="step-connector">&rsaquo;</div>
-          <div class="step-item" id="step2">
-            <span class="step-num">2</span>
-            <span class="step-label">感受</span>
-            <span class="step-rule">不指责</span>
-          </div>
-          <div class="step-connector">&rsaquo;</div>
-          <div class="step-item" id="step3">
-            <span class="step-num">3</span>
-            <span class="step-label">需要</span>
-            <span class="step-rule">不隐藏</span>
-          </div>
-          <div class="step-connector">&rsaquo;</div>
-          <div class="step-item" id="step4">
-            <span class="step-num">4</span>
-            <span class="step-label">请求</span>
-            <span class="step-rule">可执行</span>
+      <!-- Liquidity -->
+      <div class="infra-layer">
+        <div class="layer-num">03</div>
+        <div class="layer-content">
+          <div class="layer-name">Liquidity Layer · 流动性层</div>
+          <div class="layer-en">Settlement & Cross-Border</div>
+          <div class="layer-desc">联盟链 + 公链 L2 双轨；三级审核 + 第三方资金托管；FT 账户 + mBridge + Project Ensemble 跨境结算；严守 38 号文红线、对标 GENIUS Act 式披露——彻底规避天津文交所、邮币卡覆辙。</div>
+          <div class="layer-tags">
+            <span class="tag">FT 账户</span><span class="tag">mBridge</span><span class="tag">Project Ensemble</span><span class="tag">数字人民币</span><span class="tag">CCP 清算</span>
           </div>
         </div>
-
-        <div id="demoBanner" class="demo-banner" style="display:none;">
-          当前为本地模式：已从静态 JSON 自动导入场景模板。<br>
-          切换到 AI 模式后，将通过 Serverless 网关进行流式判定。
+        <div class="layer-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="10" cy="10" r="5"/>
+            <circle cx="22" cy="22" r="5"/>
+            <path d="M14 12 Q20 14 22 18"/>
+            <path d="M10 14 Q14 20 18 22"/>
+          </svg>
         </div>
+      </div>
 
-        <div class="chat-area" id="chatArea"></div>
-
-        <div class="input-area" id="inputArea">
-          <textarea id="userInput" rows="2" placeholder="..." onkeydown="handleKey(event)"></textarea>
-          <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+      <!-- Application -->
+      <div class="infra-layer">
+        <div class="layer-num">04</div>
+        <div class="layer-content">
+          <div class="layer-name">Application Layer · 应用层</div>
+          <div class="layer-en">AI Metaverse Scenarios</div>
+          <div class="layer-desc">为 AI 大模型训练提供合规数据通道；为具身智能 / 数字人 / AI Agent 提供身份与资产载体；数字孪生资产；文旅 / 展演 / 教育 / 广告 / 消费场景即插即用 API；参考清华美院《韩熙载夜宴图》AI 沉浸式体验范式批量复制。</div>
+          <div class="layer-tags">
+            <span class="tag">AI 训练数据集</span><span class="tag">AI Agent 资产</span><span class="tag">数字孪生</span><span class="tag">文化机器人</span><span class="tag">OpenUSD</span>
+          </div>
+        </div>
+        <div class="layer-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="5" y="5" width="9" height="9"/>
+            <rect x="18" y="5" width="9" height="9"/>
+            <rect x="5" y="18" width="9" height="9"/>
+            <rect x="18" y="18" width="9" height="9"/>
+            <line x1="14" y1="9.5" x2="18" y2="9.5"/>
+            <line x1="14" y1="22.5" x2="18" y2="22.5"/>
+            <line x1="9.5" y1="14" x2="9.5" y2="18"/>
+            <line x1="22.5" y1="14" x2="22.5" y2="18"/>
+          </svg>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <script>
-    // ========================
-    // State
-    // ========================
-    let currentStep = 1;
-    let conversationHistory = [];
-    let scenarioData = null;
-    let configData = null;
-    let apiMode = false;
-    let runMode = 'local';
-    let activeProvider = null;
-    let availableProviders = {};
-    let staticScenarios = [];
-    let currentScenarioIndex = 0;
+<!-- ============ SCDI 旗舰产品 ============ -->
+<section class="section" id="scdi">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Flagship Product · 战略旗舰</div>
+      <h2 class="section-title">对标"上海金"<br>打造<span class="accent">人民币计价的全球文化数字资产基准</span></h2>
+      <p class="section-subtitle">
+        以 SCDI（Shanghai Cultural Digital Index）为品牌锚，参照上海黄金交易所 2016 年推出"上海金"后被迪拜、伦敦机构纳入参考报价的路径，3—5 年窗口期内完成从"交易场所"到"定价中心"的战略跃迁。
+      </p>
+    </div>
 
-    const PROVIDER_NAMES = {
-      gemini: 'Gemini 2.5 Flash',
-      gpt5mini: 'GPT-4o mini',
-      minimax: 'minimax2.5',
-      qwen: '通义千问'
-    };
+    <div class="scdi-panel reveal">
+      <div>
+        <div class="scdi-meta">— SHANGHAI CULTURAL DIGITAL INDEX —</div>
+        <div class="scdi-name">SCDI · 上海文化数字资产指数</div>
+        <div class="scdi-en">Shanghai Cultural Digital Index Benchmark</div>
+        <p class="scdi-desc">
+          按流动性 + 市值双维度筛选 Top 50 头部文化数字资产，市值加权 + 流动性调整 + 合规披露评分三维复合；每日 14:00 集中竞价形成当日基准价；通过 Bloomberg / Refinitiv / Wind / Choice 多终端同步发布。
+        </p>
+        <ul class="scdi-features">
+          <li>SCDI-AN <span style="color:var(--text-mute);font-size:12px">数字动漫</span></li>
+          <li>SCDI-MS <span style="color:var(--text-mute);font-size:12px">微短剧</span></li>
+          <li>SCDI-GM <span style="color:var(--text-mute);font-size:12px">网络游戏 IP</span></li>
+          <li>SCDI-DT <span style="color:var(--text-mute);font-size:12px">数字文博</span></li>
+          <li>SCDI-MU <span style="color:var(--text-mute);font-size:12px">数字音乐版税</span></li>
+          <li>SCDI-DS <span style="color:var(--text-mute);font-size:12px">数字孪生</span></li>
+        </ul>
+      </div>
+      <div class="scdi-chart">
+        <!-- SCDI 视觉图：罗盘 + 集成电路 + 文化纹饰 -->
+        <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="scdiGlow" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stop-color="#e6c98a" stop-opacity="0.18"/>
+              <stop offset="1" stop-color="#e6c98a" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="scdiGold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f1ddae"/>
+              <stop offset="0.5" stop-color="#c9a25a"/>
+              <stop offset="1" stop-color="#8a6f33"/>
+            </linearGradient>
+          </defs>
 
-    const stepNames = ['', '观察', '感受', '需要', '请求'];
-    const stepRules = ['', '不评判', '不指责', '不隐藏', '可执行'];
-    const stepPlaceholders = [
-      '',
-      '请输入第 1 步：观察 —— 客观描述你看到的事实，不评判、不贴标签...',
-      '请输入第 2 步：感受 —— 表达你的真实情绪，不指责对方...',
-      '请输入第 3 步：需要 —— 说出你内心的核心需求，不隐藏、不强加...',
-      '请输入第 4 步：请求 —— 提出具体、可执行的行动建议，可协商...'
-    ];
+          <circle cx="210" cy="210" r="200" fill="url(#scdiGlow)"/>
 
-    const emotionEmoji = {
-      happy: '\u{1F60A}', sad: '\u{1F622}', angry: '\u{1F620}',
-      defensive: '\u{1F612}', touched: '\u{1F97A}', relieved: '\u{1F60C}'
-    };
-    const emotionText = {
-      happy: '开心', sad: '难过', angry: '生气',
-      defensive: '防备', touched: '触动', relieved: '释然'
-    };
+          <!-- 外环刻度 -->
+          <circle cx="210" cy="210" r="190" fill="none" stroke="url(#scdiGold)" stroke-width="1"/>
+          <circle cx="210" cy="210" r="180" fill="none" stroke="url(#scdiGold)" stroke-width="0.4" opacity="0.5"/>
+          <g stroke="url(#scdiGold)" stroke-width="0.8">
+            <g transform="translate(210 210)">
+              <!-- 24 刻度 -->
+              <g id="ticks">
+                <line x1="0" y1="-190" x2="0" y2="-180"/>
+              </g>
+            </g>
+          </g>
 
-    // ========================
-    // Default fallback scenario
-    // ========================
-    const DEFAULT_SCENARIO = {
-      scenario: {
-        title: '网瘾少年的心声',
-        description: '小Z，初三男生，沉迷网络游戏，频繁旷课去网吧，成绩一落千丈。妈妈从上海回老家监督他上学，母子经常争吵。小Z认为家人不理解、不支持他，不再愿意交流。',
-        setting: '家中小Z的房间'
-      },
-      character: {
-        name: '小Z', age: '15', identity: '初三学生',
-        personality: '内向叛逆，渴望被理解，用游戏逃避压力',
-        emotion_state: '防备、冷漠，觉得又要被说教',
-        core_issue: '觉得家人不理解自己，在家没有话语权',
-        avatar_emoji: '\u{1F9D1}'
-      },
-      player: { role: '哥哥/姐姐', goal: '用非暴力沟通让小Z愿意按时上学' },
-      opening: {
-        scene_desc: '小Z坐在桌前，低着头玩手机，看到你进来瞥了一眼，没说话',
-        first_line: '……干嘛？又来说教的？'
-      },
-      judgment_keywords: {
-        step1_bad_words: ['总是', '老是', '就知道', '沉迷', '堕落', '不争气', '废物', '没出息', '不学好', '整天'],
-        step2_bad_words: ['你让我', '你害得', '都怪你', '你就不能', '让人省心', '你怎么这样', '你对得起'],
-        step3_bad_words: ['像别人', '像小王', '像人家', '变好', '懂事', '争气', '出息'],
-        step4_bad_words: ['不准', '不许', '必须', '给我', '都得', '不能再', '以后不要'],
-        step2_good_words: ['我担心', '我心疼', '我难过', '我着急', '我害怕', '我感到', '我很', '心里'],
-        step3_good_words: ['希望', '需要', '想要', '在乎', '重要'],
-        step4_good_words: ['能不能', '可不可以', '我们', '试试', '商量', '一起', '好吗', '怎么样', '你觉得']
-      },
-      emotion_responses: {
-        step1_pass: { emotion: 'sad', response: '……嗯，是，那又怎样。你说的是事实，我也没否认。' },
-        step1_fail: { emotion: 'angry', response: '哼……又来这套，我不想听。' },
-        step2_pass: { emotion: 'touched', response: '（低下头，声音小了）……你……你是真的担心我啊？不是就想骂我？' },
-        step2_fail: { emotion: 'defensive', response: '行了行了，我知道我什么都不好行了吧。' },
-        step3_pass: { emotion: 'relieved', response: '（抬起头看着你）……其实我也不是故意的，我就是觉得……在家里没人听我说话。' },
-        step3_fail: { emotion: 'defensive', response: '我就是我，别拿我跟别人比。' },
-        step4_pass: { emotion: 'happy', response: '（想了想）……行吧，可以试试。你说的周末打游戏是真的吗？那我先试一周看看。' },
-        step4_fail: { emotion: 'angry', response: '又来命令我，跟我妈一样！' }
+          <!-- 60 分钟刻度 - JS 生成简化为内联 -->
+          <g transform="translate(210 210)" stroke="url(#scdiGold)" stroke-width="0.6">
+            <g><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(30)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(60)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(90)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(120)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(150)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(180)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(210)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(240)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(270)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(300)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+            <g transform="rotate(330)"><line x1="0" y1="-188" x2="0" y2="-178"/></g>
+          </g>
+
+          <!-- 中环 -->
+          <circle cx="210" cy="210" r="140" fill="none" stroke="url(#scdiGold)" stroke-width="0.6"/>
+          <circle cx="210" cy="210" r="100" fill="none" stroke="url(#scdiGold)" stroke-width="0.4" opacity="0.6"/>
+
+          <!-- 集成电路放射线 -->
+          <g stroke="url(#scdiGold)" stroke-width="0.5" opacity="0.7" fill="none">
+            <path d="M210 110 L210 70 L260 70"/>
+            <path d="M310 210 L350 210 L350 250"/>
+            <path d="M210 310 L210 350 L160 350"/>
+            <path d="M110 210 L70 210 L70 160"/>
+            <circle cx="260" cy="70" r="2.5" fill="url(#scdiGold)"/>
+            <circle cx="350" cy="250" r="2.5" fill="url(#scdiGold)"/>
+            <circle cx="160" cy="350" r="2.5" fill="url(#scdiGold)"/>
+            <circle cx="70" cy="160" r="2.5" fill="url(#scdiGold)"/>
+          </g>
+
+          <!-- 蜡烛图样式（暗示价格） -->
+          <g>
+            <line x1="155" y1="220" x2="155" y2="252" stroke="url(#scdiGold)" stroke-width="1"/>
+            <rect x="151" y="226" width="8" height="20" fill="url(#scdiGold)"/>
+            <line x1="175" y1="200" x2="175" y2="240" stroke="url(#scdiGold)" stroke-width="1"/>
+            <rect x="171" y="208" width="8" height="22" fill="url(#scdiGold)" opacity="0.6"/>
+            <line x1="195" y1="180" x2="195" y2="232" stroke="url(#scdiGold)" stroke-width="1"/>
+            <rect x="191" y="188" width="8" height="30" fill="url(#scdiGold)"/>
+            <line x1="215" y1="170" x2="215" y2="222" stroke="url(#scdiGold)" stroke-width="1"/>
+            <rect x="211" y="178" width="8" height="20" fill="url(#scdiGold)" opacity="0.7"/>
+            <line x1="235" y1="160" x2="235" y2="212" stroke="url(#scdiGold)" stroke-width="1"/>
+            <rect x="231" y="168" width="8" height="32" fill="url(#scdiGold)"/>
+            <line x1="255" y1="150" x2="255" y2="202" stroke="url(#scdiGold)" stroke-width="1"/>
+            <rect x="251" y="158" width="8" height="28" fill="url(#scdiGold)" opacity="0.7"/>
+          </g>
+
+          <!-- 中心 SCDI -->
+          <circle cx="210" cy="210" r="40" fill="#050d1e" stroke="url(#scdiGold)" stroke-width="1"/>
+          <text x="210" y="207" text-anchor="middle" font-family="Cormorant Garamond" font-size="22" font-weight="700" fill="url(#scdiGold)" letter-spacing="2">SCDI</text>
+          <text x="210" y="222" text-anchor="middle" font-family="Cormorant Garamond" font-size="9" fill="#a9b8d3" letter-spacing="3">SHANGHAI</text>
+
+          <!-- 顶部时间标识 -->
+          <text x="210" y="35" text-anchor="middle" font-family="Cormorant Garamond" font-size="11" font-style="italic" fill="url(#scdiGold)" letter-spacing="4">14:00 BENCHMARK</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 阶段战略时间线 ============ -->
+<section class="section" id="phases">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Strategic Roadmap · 分阶段战略</div>
+      <h2 class="section-title">从文化数字资产交易<br>到 <span class="accent">AI 元宇宙数字经济基础设施</span></h2>
+      <p class="section-subtitle">
+        本交易所遵循"产业演进与基础设施进化同构"逻辑，按四阶段推进：1.0 阶段交易已有资产 → 2.0 阶段生成可交互资产 → 3.0 阶段形成 AI Agent 经济体 → 4.0 阶段成为全球定价中心。
+      </p>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="timeline-row">
+        <div class="phase">
+          <div class="phase-num">Ⅰ</div>
+          <div class="phase-dot"></div>
+          <div class="phase-years">2026 — 2027</div>
+          <div class="phase-title">文化数字资产交易<br>基础设施搭建 · SCDI 首发</div>
+          <div class="phase-body">完成临港 + 宝山双中心搭建；信任层 + 价格层 + 流动性层 + 应用层核心能力全面上线；2026 Q4 首次发布 SCDI 指数（启动 ≥3 个子指数）。</div>
+          <div class="phase-kpi">年交易额 40—80 亿 · 跨境占比 ≥10%</div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Ⅱ</div>
+          <div class="phase-dot"></div>
+          <div class="phase-years">2028 — 2030</div>
+          <div class="phase-title">全域数字资产交易<br>沪港双中心 · 定价权初现</div>
+          <div class="phase-body">扩展至文化数据要素、数字孪生、代币化文化基金；对接 HKMA Project Ensemble；SCDI 进入 Bloomberg / Refinitiv 主流终端；港 / 迪 / 新 / 伦四节点做市商。</div>
+          <div class="phase-kpi">年交易额 250 亿 · 跨境占比 ≥30%</div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Ⅲ</div>
+          <div class="phase-dot"></div>
+          <div class="phase-years">2031 — 2033</div>
+          <div class="phase-title">AI 原生资产交易<br>训练集 · 模型 · Agent</div>
+          <div class="phase-body">AI 训练数据集、模型权重、AI Agent 身份与资产、AI 生成内容版税成为主业；与 Nvidia Omniverse / 国产工业元宇宙深度集成；zkML 标准化。</div>
+          <div class="phase-kpi">年交易额 800 亿 · 跨境占比 ≥40%</div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Ⅳ</div>
+          <div class="phase-dot"></div>
+          <div class="phase-years">2033+</div>
+          <div class="phase-title">元宇宙经济基础设施<br>全球文化数字资产定价中心</div>
+          <div class="phase-body">SCDI 成为全球机构配置文化数字资产的标配基准；人民币计价文化数字资产国际货币锚；交易所成为物理世界、数字孪生、AI Agent 经济与元宇宙之间的价值锚定机构。</div>
+          <div class="phase-kpi">年交易额 5,000 亿+ · 全球基准</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 双中心 ============ -->
+<section class="section" id="sites">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Dual-Center Layout · 双中心选址</div>
+      <h2 class="section-title">临港跨境 · 宝山研发<br><span class="accent">「双中心、一体化」战略架构</span></h2>
+      <p class="section-subtitle">
+        综合政策适配、产业协同、跨境通达三大维度，从五大重点园区比选出"主中心 + 副中心"双中心方案，最大化享受临港制度型开放四件套与宝山四重政策红利。
+      </p>
+    </div>
+
+    <div class="sites-grid reveal">
+      <div class="site-card">
+        <span class="site-tag">主中心</span>
+        <h3 class="site-name">临港新片区国际数据经济产业园</h3>
+        <div class="site-role">Registration · Cross-Border · International Data Hub</div>
+        <p class="site-body">
+          全国唯一同时具备 FT 账户跨境结算、数据跨境分类分级清单、国际数据专线"团购"、数字文化出海专项扶持四项制度型开放工具的综合高地。承担注册、跨境结算、数据出境、"来数加工"功能。
+        </p>
+        <div class="site-stats">
+          <div>
+            <div class="ss-num">23,000<span style="font-size:14px"> PFLOPS</span></div>
+            <div class="ss-label">商汤 AIDC 智算</div>
+          </div>
+          <div>
+            <div class="ss-num">15,000<span style="font-size:14px"> 卡</span></div>
+            <div class="ss-label">临港液冷智算集群</div>
+          </div>
+          <div>
+            <div class="ss-num">1,000<span style="font-size:14px"> 亿</span></div>
+            <div class="ss-label">2025 产业规模目标</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <span class="site-tag">副中心</span>
+        <h3 class="site-name">宝山南大智慧城</h3>
+        <div class="site-role">R&amp;D · Incubation · Industry Cluster</div>
+        <p class="site-body">
+          上海"北转型"核心抓手，中心城区唯一享受五大新城同等政策待遇的科创板块。承担研发孵化、产业集聚、人才引育，与临港形成"北研发—南出海"互补格局；"宝山科创 30 条"最高 600 万研发补贴叠加四重政策红利。
+        </p>
+        <div class="site-stats">
+          <div>
+            <div class="ss-num">6.3<span style="font-size:14px"> km²</span></div>
+            <div class="ss-label">总规模 / 540 万 ㎡</div>
+          </div>
+          <div>
+            <div class="ss-num">2,000+</div>
+            <div class="ss-label">已集聚企业</div>
+          </div>
+          <div>
+            <div class="ss-num">43%</div>
+            <div class="ss-label">公共绿地占比</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 四校产学研 ============ -->
+<section class="section school-section" id="schools">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Quad-University Alliance · 四校产学研</div>
+      <h2 class="section-title">复旦 · 同济 · 上大 · 清华<br><span class="accent">中国最具研发深度的产学研生态</span></h2>
+      <p class="section-subtitle">
+        以"复旦（金融 + 微电子底层）+ 同济（工程化 + 区块链 + 设计）+ 上大（影视语料 + 高性能计算）+ 清华（AI Agent + 数字人 + 市场推广）"四校组合作为产学研核心，设立四校产学研理事会与六大联合实验室。
+      </p>
+    </div>
+
+    <div class="schools-grid reveal">
+      <div class="school-card">
+        <div class="school-name">复旦大学</div>
+        <div class="school-tag">Finance + Micro-Electronics</div>
+        <ul class="school-list">
+          <li>集成芯片与系统全国重点实验室（刘明院士）</li>
+          <li>人工智能创新与产业研究院 IIPL · CFFF 算力</li>
+          <li>CN-DBpedia 文化 IP 知识图谱（肖仰华）</li>
+          <li>管理学院数据资源入表（黄丽华 / 黄蓉）</li>
+          <li>FISF 金融学院 · MOSS / OpenMOSS</li>
+        </ul>
+      </div>
+      <div class="school-card">
+        <div class="school-name">同济大学</div>
+        <div class="school-tag">Blockchain + Twin City</div>
+        <ul class="school-list">
+          <li>上海区块链应用服务工程技术研究中心</li>
+          <li>吴志强院士"城元宇宙"</li>
+          <li>设计创意学院 · AIGC 数字媒体</li>
+          <li>计算机科学与技术学院（申恒涛院长）</li>
+          <li>自主智能无人系统全国重点实验室</li>
+        </ul>
+      </div>
+      <div class="school-card">
+        <div class="school-name">上海大学</div>
+        <div class="school-tag">Cinema + AI Media</div>
+        <ul class="school-list">
+          <li>上海电影学院 · 上海电影特效工程中心</li>
+          <li>全球人工智能媒体研究院</li>
+          <li>人工智能研究院（陆军院士）</li>
+          <li>谢志峰 CVPR 团队 · SonicVisionLM</li>
+          <li>自强系列超算平台</li>
+        </ul>
+      </div>
+      <div class="school-card">
+        <div class="school-name">清华大学</div>
+        <div class="school-tag">AI Agent + Embodied AI</div>
+        <ul class="school-list">
+          <li>智能产业研究院 AIR · 交叉信息研究院 IIIS</li>
+          <li>美院《韩熙载夜宴图》AI 沉浸式范式</li>
+          <li>五道口金融科技 · 区块链研究中心</li>
+          <li>智谱 AI / 生数 Vidu / 面壁智能</li>
+          <li>星动纪元 · 银河通用具身智能</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 装饰带 -->
+<div class="scroll-decor">
+  <svg viewBox="0 0 540 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="decorGold2" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#c9a25a" stop-opacity="0"/>
+        <stop offset="0.5" stop-color="#c9a25a" stop-opacity="1"/>
+        <stop offset="1" stop-color="#c9a25a" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="0" y1="25" x2="540" y2="25" stroke="url(#decorGold2)" stroke-width="0.6"/>
+    <g transform="translate(270 25)" stroke="#c9a25a" fill="none" stroke-width="0.8">
+      <circle r="14"/>
+      <polygon points="0,-8 8,0 0,8 -8,0"/>
+      <line x1="-14" y1="0" x2="-30" y2="0"/>
+      <line x1="14" y1="0" x2="30" y2="0"/>
+      <circle cx="-40" cy="0" r="3"/>
+      <circle cx="40" cy="0" r="3"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ============ 财务测算 ============ -->
+<section class="section finance-section" id="finance">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Financial Projection · 财务评价</div>
+      <h2 class="section-title">第 2 年盈亏平衡 · 第 10 年净利 5.7 亿<br><span class="accent">利润率稳定在 50%—60% 区间</span></h2>
+      <p class="section-subtitle">
+        筑基 · 突破 · 引领三阶段稳步推进，对标 DIFC（2024 总收入 +37%、营业利润 +55%）、HKEX（2024 净利 131.55 亿港元）、SGX、LSE、NYSE+NASDAQ 五大国际交易所，建立经济带动效应测算模型。
+      </p>
+    </div>
+
+    <div class="finance-grid reveal">
+      <div>
+        <table class="fin-table">
+          <thead>
+            <tr>
+              <th>阶段</th>
+              <th>年度</th>
+              <th>合计收入</th>
+              <th>净利润</th>
+              <th>利润率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">筑基期</td>
+              <td>第 1 年</td>
+              <td class="num">0.22 亿</td>
+              <td class="num" style="color:#e88a8a">-0.21 亿</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>第 2 年</td>
+              <td class="num">0.50 亿</td>
+              <td class="num">+0.02 亿</td>
+              <td>盈亏平衡</td>
+            </tr>
+            <tr>
+              <td rowspan="3">突破期</td>
+              <td>第 3 年</td>
+              <td class="num">1.10 亿</td>
+              <td class="num">0.54 亿</td>
+              <td>49.1%</td>
+            </tr>
+            <tr>
+              <td>第 4 年</td>
+              <td class="num">1.80 亿</td>
+              <td class="num">1.02 亿</td>
+              <td>56.7%</td>
+            </tr>
+            <tr>
+              <td>第 5 年</td>
+              <td class="num">2.70 亿</td>
+              <td class="num">1.72 亿</td>
+              <td>63.7%</td>
+            </tr>
+            <tr>
+              <td rowspan="3">引领期</td>
+              <td>第 6 年</td>
+              <td class="num">3.80 亿</td>
+              <td class="num">2.20 亿</td>
+              <td>≈58%</td>
+            </tr>
+            <tr>
+              <td>第 8 年</td>
+              <td class="num">6.60 亿</td>
+              <td class="num">3.80 亿</td>
+              <td>≈58%</td>
+            </tr>
+            <tr>
+              <td>第 10 年</td>
+              <td class="num">9.50 亿</td>
+              <td class="num">5.70 亿</td>
+              <td>≈60%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fin-callouts">
+        <div class="callout">
+          <div class="callout-num">35—40 <span style="font-size:18px">亿</span></div>
+          <div class="callout-label">十年累计营业收入</div>
+        </div>
+        <div class="callout">
+          <div class="callout-num">20—30 <span style="font-size:18px">亿</span></div>
+          <div class="callout-label">十年累计净利润</div>
+        </div>
+        <div class="callout">
+          <div class="callout-num">6—9 <span style="font-size:18px">亿</span></div>
+          <div class="callout-label">十年累计税收贡献</div>
+        </div>
+        <div class="callout">
+          <div class="callout-num">3—5 <span style="font-size:18px">万</span></div>
+          <div class="callout-label">2035 年生态圈就业岗位</div>
+        </div>
+        <div class="callout">
+          <div class="callout-num">50—80 <span style="font-size:18px">亿</span></div>
+          <div class="callout-label">2030 年生态带动年收入</div>
+        </div>
+        <div class="callout">
+          <div class="callout-num">2%—3%</div>
+          <div class="callout-label">数字交付贸易目标贡献</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 五大核心判断 ============ -->
+<section class="section" id="judgements">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Five Core Judgements · 综合结论</div>
+      <h2 class="section-title">可行性论证 · <span class="accent">五大核心判断</span></h2>
+      <p class="section-subtitle">
+        基于政策依据、市场分析、产业趋势、商业模式、组织架构、合规体系、运营方案、产学研合作、国际对标、风险防控、财务评价与效益分析的系统论证，得出如下五大核心判断。
+      </p>
+    </div>
+
+    <div class="judgements reveal">
+      <div class="judge">
+        <div class="judge-num">— JUDGEMENT 01 —</div>
+        <div class="judge-title">政策窗口历史性叠加</div>
+        <p class="judge-body">"十五五"规划 + GB/T 国标 + 上海配套 + 临港十五条 + 智算云实施意见，形成自 2011 年 38 号文以来最强顶层政策窗口。错失此窗口，或将等待下一个五年。</p>
+      </div>
+      <div class="judge">
+        <div class="judge-num">— JUDGEMENT 02 —</div>
+        <div class="judge-title">三位一体战略定位</div>
+        <p class="judge-body">"合规型代币证券 + 文化数据要素 + AI 原生数字资产经济操作系统"——不复刻 OpenSea 型纯 NFT 消费市场（96% 已"死亡"），坚持可生成、可训练、可交互、可估值、可运营。</p>
+      </div>
+      <div class="judge">
+        <div class="judge-num">— JUDGEMENT 03 —</div>
+        <div class="judge-title">SCDI 是商业灵魂</div>
+        <p class="judge-body">集中竞价 + 基准产品标准化 + 指数化 + 做市商 + 跨境参与度——SCDI 必须被确立为战略旗帜性工程，对标 SGE 上海金、FTSE Russell、MSCI 商业化路径。</p>
+      </div>
+      <div class="judge">
+        <div class="judge-num">— JUDGEMENT 04 —</div>
+        <div class="judge-title">四校产学研具象可落地</div>
+        <p class="judge-body">不是概念而是清单——四校已具备 33 个具体实验室 / 研究院 / 工程中心，30 余位院士及核心学者，6 大联合实验室矩阵，3—6 亿元 × 4 校深度绑定。</p>
+      </div>
+      <div class="judge">
+        <div class="judge-num">— JUDGEMENT 05 —</div>
+        <div class="judge-title">从设计之初规避覆辙</div>
+        <p class="judge-body">"四条绝对红线"硬性编码：不做权益份额化公开发行 · 不上线无牌照虚拟货币 · 严格 KYC 与适当性 · 明确联席监管归口，规避天津文交所、南京邮币卡、FTX 等历史教训。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA · 六大恳切建议 ============ -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-frame reveal">
+      <div class="section-label" style="justify-content:center;display:inline-flex;margin-bottom:20px">Six Recommendations · 六大恳切建议</div>
+      <h2 class="cta-title">恳请相关部委支持<br><span class="accent">"十五五"窗口稍纵即逝</span></h2>
+      <p class="cta-sub">
+        将本交易所纳入上海"十五五"文化数字化专项规划 · 推进宝山 / 临港双中心布局 · 争取国家数据局、文旅部、证监会联席授权 · 与 HKMA Ensemble / mBridge / BIS Agorá 沙盒对接 · 发行首支 SCDI 基准指数 · 构建"产业伙伴 + 产学研 + 社会资本"股权与治理架构。
+      </p>
+      <div class="cta-buttons">
+        <a href="mailto:942543159@qq.com" class="btn-primary">联系筹备组 <span>→</span></a>
+        <a href="#top" class="btn-ghost">返回顶部</a>
+      </div>
+      <div style="margin-top:40px;padding-top:30px;border-top:1px solid var(--line-gold);display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:left">
+        <div>
+          <div style="font-size:11px;letter-spacing:0.2em;color:var(--text-mute);margin-bottom:6px;text-transform:uppercase">申请单位</div>
+          <div style="font-family:var(--serif);font-size:14px;color:var(--text)">上海金泓绿优供应链管理有限公司<br><span style="color:var(--text-mute);font-size:12px">（项目筹备组）</span></div>
+        </div>
+        <div>
+          <div style="font-size:11px;letter-spacing:0.2em;color:var(--text-mute);margin-bottom:6px;text-transform:uppercase">联系人</div>
+          <div style="font-family:var(--serif);font-size:14px;color:var(--text)">邬金山<br><span style="color:var(--bund-gold-300);font-size:13px">13671714499</span></div>
+        </div>
+        <div>
+          <div style="font-size:11px;letter-spacing:0.2em;color:var(--text-mute);margin-bottom:6px;text-transform:uppercase">电子邮箱</div>
+          <div style="font-family:var(--serif);font-size:14px;color:var(--text)">942543159@qq.com<br><span style="color:var(--text-mute);font-size:12px">报告日期：2026 年 4 月</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Footer ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <svg class="brand-mark" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="38" height="38" fill="none" stroke="#c9a25a" stroke-width="1"/>
+            <rect x="7" y="7" width="28" height="28" fill="none" stroke="#c9a25a" stroke-width="0.6"/>
+            <path d="M11 28 L11 18 L17 14 L17 28 Z M19 28 L19 12 L24 9 L24 28 Z M26 28 L26 16 L31 14 L31 28 Z" fill="#c9a25a"/>
+            <line x1="9" y1="31" x2="33" y2="31" stroke="#c9a25a" stroke-width="1"/>
+          </svg>
+          <div class="brand-text">
+            <div class="brand-cn">上海文化数字交易所</div>
+            <div class="brand-en">Shanghai Cultural Digital Exchange · SHCDX</div>
+          </div>
+        </div>
+        <p class="footer-tagline">合规型 AI 元宇宙产业基础设施 · 面向 AI 时代的数字资产形成、定价与运营基础设施 · 助力上海建设全球文化数字贸易枢纽。</p>
+      </div>
+      <div class="footer-col">
+        <h4>架构</h4>
+        <ul>
+          <li>Trust · 信任层</li>
+          <li>Price Discovery · 价格层</li>
+          <li>Liquidity · 流动性层</li>
+          <li>Application · 应用层</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>合规底座</h4>
+        <ul>
+          <li>GB/T 46353-2025</li>
+          <li>GB/T 46843-2025</li>
+          <li>"十五五"规划</li>
+          <li>国发〔2011〕38 号</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>国际网络</h4>
+        <ul>
+          <li>BIS Project Agorá</li>
+          <li>HKMA Project Ensemble</li>
+          <li>MAS Project Guardian</li>
+          <li>mBridge · FT 账户</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 上海某某文化数字交易所设立项目（暂定名）· 项目筹备组</div>
+      <div>保密等级：内部资料 · 非经发起人书面同意不得引用或传阅</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 滚动渐显
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
       }
-    };
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // ========================
-    // Config & API (server-side proxy)
-    // ========================
-    async function loadConfig() {
-      try {
-        const resp = await fetch('config.json');
-        configData = await resp.json();
-      } catch (e) {
-        console.warn('Config load failed, using defaults');
-        configData = {
-          app: { defaultMode: 'local' },
-          staticScenarios: { url: 'scenarios.json' },
-          api: {
-            baseUrl: '',
-            endpoints: { verify: '/verify', chat: '/chat' },
-            provider: 'qwen'
-          },
-          providers: {}
-        };
-      }
-
-      configData.app = configData.app || {};
-      configData.staticScenarios = configData.staticScenarios || { url: 'scenarios.json' };
-      configData.api = configData.api || {};
-      configData.api.endpoints = configData.api.endpoints || { verify: '/verify', chat: '/chat' };
-      const savedProvider = localStorage.getItem('nvc_provider');
-      if (savedProvider) configData.api.provider = savedProvider;
-
-      const defaultMode = configData.app.defaultMode === 'api' ? 'api' : 'local';
-      const savedMode = localStorage.getItem('nvc_mode');
-      runMode = (savedMode === 'api' || savedMode === 'local') ? savedMode : defaultMode;
-      document.getElementById('runMode').value = runMode;
-    }
-
-    async function loadStaticScenarios() {
-      const url = configData?.staticScenarios?.url || 'scenarios.json';
-      try {
-        const resp = await fetch(url);
-        const data = await resp.json();
-        const list = Array.isArray(data) ? data : data.scenarios;
-        if (Array.isArray(list) && list.length > 0) {
-          staticScenarios = list;
-          currentScenarioIndex = 0;
-          return;
+  // 导航锚点平滑
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        const t = document.querySelector(id);
+        if (t) {
+          e.preventDefault();
+          t.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      } catch (e) {
-        console.warn('Failed to load static scenarios:', e);
       }
-      staticScenarios = [DEFAULT_SCENARIO];
-      currentScenarioIndex = 0;
-    }
+    });
+  });
+</script>
 
-    function getNextStaticScenario() {
-      if (!staticScenarios.length) return DEFAULT_SCENARIO;
-      const scene = staticScenarios[currentScenarioIndex % staticScenarios.length];
-      currentScenarioIndex = (currentScenarioIndex + 1) % staticScenarios.length;
-      return scene;
-    }
-
-    function buildApiUrl(endpointKey) {
-      const endpoint = configData?.api?.endpoints?.[endpointKey] || '';
-      const baseUrl = (configData?.api?.baseUrl || '').trim().replace(/\/$/, '');
-      if (!endpoint) throw new Error(`Missing endpoint config: ${endpointKey}`);
-      if (/^https?:\/\//i.test(endpoint)) return endpoint;
-      const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-      return baseUrl ? `${baseUrl}${normalizedEndpoint}` : `/api${normalizedEndpoint}`;
-    }
-
-    async function verifyProviders() {
-      let verifyDetails = {};
-      try {
-        const resp = await fetch(buildApiUrl('verify'));
-        const data = await resp.json();
-        availableProviders = data.providers || {};
-        verifyDetails = data.details || {};
-      } catch (e) {
-        console.error('Verify endpoint unreachable:', e);
-        availableProviders = {};
-      }
-      const select = document.getElementById('apiProvider');
-      select.innerHTML = '';
-      const preferred = configData.api.provider;
-      let hasAvailable = false;
-      for (const [key, online] of Object.entries(availableProviders)) {
-        if (!online) continue;
-        hasAvailable = true;
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = PROVIDER_NAMES[key] || key;
-        if (key === preferred) opt.selected = true;
-        select.appendChild(opt);
-      }
-      if (hasAvailable) {
-        activeProvider = select.value;
-      } else {
-        select.innerHTML = '<option value="">无可用服务</option>';
-        activeProvider = null;
-        console.warn('No API providers available. Details:', verifyDetails);
-      }
-      updateAPIStatus();
-    }
-
-    function switchProvider() {
-      const val = document.getElementById('apiProvider').value;
-      if (val && availableProviders[val]) {
-        activeProvider = val;
-        configData.api.provider = val;
-        localStorage.setItem('nvc_provider', val);
-      }
-      updateAPIStatus();
-    }
-
-    function switchRunMode() {
-      runMode = document.getElementById('runMode').value === 'api' ? 'api' : 'local';
-      localStorage.setItem('nvc_mode', runMode);
-      updateAPIStatus();
-      generateNewScenario();
-    }
-
-    function toggleConfig() {
-      const panel = document.getElementById('configPanel');
-      const btn = document.getElementById('btnConfig');
-      panel.classList.toggle('show');
-      btn.classList.toggle('active');
-    }
-
-    function getActiveModel() {
-      if (!activeProvider || !configData.providers[activeProvider]) return null;
-      return configData.providers[activeProvider].model;
-    }
-
-    async function proxyCall(messages, temperature = 0.7, maxTokens = 8000, onChunk = null) {
-      const model = getActiveModel();
-      if (!activeProvider || !model) {
-        console.error('proxyCall failed: no active provider or model', { activeProvider, model, configProviders: configData?.providers });
-        return null;
-      }
-      const resp = await fetch(buildApiUrl('chat'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: activeProvider,
-          model,
-          messages,
-          temperature,
-          max_tokens: maxTokens,
-          stream: true
-        })
-      });
-      if (!resp.ok) {
-        const errBody = await resp.text().catch(() => '');
-        throw new Error(`Proxy error ${resp.status}: ${errBody.substring(0, 200)}`);
-      }
-
-      const contentType = resp.headers.get('content-type') || '';
-      if (!resp.body || (!contentType.includes('text/event-stream') && !onChunk)) {
-        return await resp.json();
-      }
-
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let fullText = '';
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        if (contentType.includes('text/event-stream')) {
-          const events = buffer.split('\n\n');
-          buffer = events.pop() || '';
-          for (const evt of events) {
-            const lines = evt.split('\n').filter(line => line.startsWith('data:'));
-            for (const line of lines) {
-              const payload = line.slice(5).trim();
-              if (!payload || payload === '[DONE]') continue;
-              try {
-                const parsed = JSON.parse(payload);
-                const delta = parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.message?.content || '';
-                if (delta) {
-                  fullText += delta;
-                  if (onChunk) onChunk(fullText);
-                }
-              } catch {
-                fullText += payload;
-                if (onChunk) onChunk(fullText);
-              }
-            }
-          }
-        } else {
-          fullText += buffer;
-          buffer = '';
-          if (onChunk) onChunk(fullText);
-        }
-      }
-
-      if (buffer && !contentType.includes('text/event-stream')) fullText += buffer;
-      return { choices: [{ message: { content: fullText } }] };
-    }
-
-    function updateAPIStatus() {
-      apiMode = runMode === 'api' && !!activeProvider;
-      const dot = document.getElementById('statusDot');
-      const text = document.getElementById('statusText');
-      const banner = document.getElementById('demoBanner');
-      const providerName = activeProvider ? (PROVIDER_NAMES[activeProvider] || activeProvider) : '';
-      if (apiMode) {
-        dot.className = 'status-dot online';
-        text.textContent = `AI 模式 · ${providerName}`;
-        if (banner) banner.style.display = 'none';
-      } else {
-        dot.className = 'status-dot offline';
-        text.textContent = runMode === 'api' ? 'AI 模式不可用，已回退本地模式' : '本地模式';
-        if (banner) banner.style.display = 'block';
-      }
-    }
-
-    // ========================
-    // Local Judge (fallback)
-    // ========================
-    function localJudge(text, step) {
-      const kw = scenarioData.judgment_keywords;
-      const er = scenarioData.emotion_responses;
-      let pass = true;
-      let feedback = '';
-      let hint = '';
-      let emotion = '';
-      let response = '';
-
-      if (step === 1) {
-        const found = kw.step1_bad_words.find(w => text.includes(w));
-        if (found || text.length < 10) {
-          pass = false;
-          feedback = found ? `"${found}"是评判性词语，不是客观事实描述。` : '描述太简短，请具体说明时间、地点、行为等事实。';
-          hint = '试试描述具体的可观察事实，例如时间、次数、行为。';
-          emotion = er.step1_fail.emotion;
-          response = er.step1_fail.response;
-        } else {
-          feedback = '很好！你客观描述了事实，没有带评判。';
-          emotion = er.step1_pass.emotion;
-          response = er.step1_pass.response;
-        }
-      } else if (step === 2) {
-        const found = kw.step2_bad_words.find(w => text.includes(w));
-        const hasFeeling = kw.step2_good_words.some(w => text.includes(w));
-        if (found) {
-          pass = false;
-          feedback = `"${found}"是在指责对方，不是表达自己的感受。`;
-          hint = '试试用"我感到担心/心疼/难过"来表达。';
-          emotion = er.step2_fail.emotion;
-          response = er.step2_fail.response;
-        } else if (!hasFeeling) {
-          pass = false;
-          feedback = '没有明确表达你的情绪感受。';
-          hint = '请用"我"开头，说出你真实的情绪。';
-          emotion = er.step2_fail.emotion;
-          response = er.step2_fail.response;
-        } else {
-          feedback = '真诚地表达了感受，很棒！';
-          emotion = er.step2_pass.emotion;
-          response = er.step2_pass.response;
-        }
-      } else if (step === 3) {
-        const found = kw.step3_bad_words.find(w => text.includes(w));
-        const hasNeed = kw.step3_good_words.some(w => text.includes(w));
-        if (found) {
-          pass = false;
-          feedback = `"${found}"是在比较或含糊表达，不是明确的需求。`;
-          hint = '试试说出具体需求，如"我希望你能被尊重""我希望你平安"。';
-          emotion = er.step3_fail.emotion;
-          response = er.step3_fail.response;
-        } else if (!hasNeed || text.length < 15) {
-          pass = false;
-          feedback = '需求表达不够明确或太简短。';
-          hint = '请说出你内心真正在乎的是什么。';
-          emotion = er.step3_fail.emotion;
-          response = er.step3_fail.response;
-        } else {
-          feedback = '说出了真实的核心需求，非常好！';
-          emotion = er.step3_pass.emotion;
-          response = er.step3_pass.response;
-        }
-      } else if (step === 4) {
-        const found = kw.step4_bad_words.find(w => text.includes(w));
-        const hasSpecific = kw.step4_good_words.some(w => text.includes(w));
-        if (found) {
-          pass = false;
-          feedback = `"${found}"是命令式语气，不是可协商的请求。`;
-          hint = '试试用"你能不能……""我们一起商量……好吗？"的句式。';
-          emotion = er.step4_fail.emotion;
-          response = er.step4_fail.response;
-        } else if (!hasSpecific) {
-          pass = false;
-          feedback = '请求不够具体或缺少协商语气。';
-          hint = '加上具体方案和"好吗？""你觉得呢？"等协商语气。';
-          emotion = er.step4_fail.emotion;
-          response = er.step4_fail.response;
-        } else {
-          feedback = '提出了具体、可执行且可协商的请求，完美！';
-          emotion = er.step4_pass.emotion;
-          response = er.step4_pass.response;
-        }
-      }
-
-      return { pass, current_step: step, feedback, response, emotion, hint };
-    }
-
-    // ========================
-    // API Call for Dialog
-    // ========================
-    async function callAPI(userText) {
-      if (!apiMode) {
-        return localJudge(userText, currentStep);
-      }
-
-      conversationHistory.push({
-        role: 'user',
-        content: `[当前是第${currentStep}轮-${stepNames[currentStep]}（${stepRules[currentStep]}）]
-学生输入：${userText}`
-      });
-
-      const messages = [
-        { role: 'system', content: buildDialogSystemPrompt(scenarioData) },
-        ...conversationHistory
-      ];
-
-      try {
-        const data = await proxyCall(messages, 0.7, 500, (partial) => {
-          updateLoadingText(partial);
-        });
-        const content = data?.choices?.[0]?.message?.content || '';
-        conversationHistory.push({ role: 'assistant', content });
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return JSON.parse(jsonMatch[0]);
-        throw new Error('Invalid JSON');
-      } catch (e) {
-        console.error('API Error:', e);
-        addMessage('（网络异常，已自动回退本地判定）', false);
-        return localJudge(userText, currentStep);
-      }
-    }
-
-    // ========================
-    // UI Helpers
-    // ========================
-    function addMessage(text, isUser) {
-      const chatArea = document.getElementById('chatArea');
-      const div = document.createElement('div');
-      div.className = `message ${isUser ? 'user' : ''}`;
-      const avatarEmoji = isUser ? '\u{1F464}' : (scenarioData ? scenarioData.character.avatar_emoji : '\u{1F9D1}');
-      div.innerHTML = `
-        <div class="avatar">${avatarEmoji}</div>
-        <div class="bubble">${text}</div>
-      `;
-      chatArea.appendChild(div);
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
-
-    function addFeedback(pass, feedback, hint, emotion) {
-      const chatArea = document.getElementById('chatArea');
-      const div = document.createElement('div');
-      div.className = 'feedback-bubble';
-      let html = `<div class="${pass ? 'feedback-pass' : 'feedback-fail'}">`;
-      html += `<div class="label">${pass ? '\u2705 通过' : '\u274C 未通过'}</div>`;
-      html += `<div>${feedback}</div>`;
-      if (!pass && hint) html += `<div style="margin-top:6px;opacity:0.85;">提示：${hint}</div>`;
-      if (emotion) html += `<span class="emotion-tag">${emotionEmoji[emotion] || ''} ${scenarioData ? scenarioData.character.name : '对方'}的情绪：${emotionText[emotion] || emotion}</span>`;
-      html += '</div>';
-      div.innerHTML = html;
-      chatArea.appendChild(div);
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
-
-    function addLoading() {
-      const chatArea = document.getElementById('chatArea');
-      const div = document.createElement('div');
-      div.className = 'message';
-      div.id = 'loadingMsg';
-      const name = scenarioData ? scenarioData.character.name : '对方';
-      const emoji = scenarioData ? scenarioData.character.avatar_emoji : '\u{1F9D1}';
-      div.innerHTML = `
-        <div class="avatar">${emoji}</div>
-        <div class="bubble" id="loadingBubble"><span class="loading-dots">${name}正在思考</span></div>
-      `;
-      chatArea.appendChild(div);
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
-
-    function updateLoadingText(text) {
-      const el = document.getElementById('loadingBubble');
-      if (!el || !text) return;
-      el.innerHTML = text.replace(/\n/g, '<br>');
-    }
-
-    function removeLoading() {
-      const el = document.getElementById('loadingMsg');
-      if (el) el.remove();
-    }
-
-    function updateSteps(step, passed) {
-      for (let i = 1; i <= 4; i++) {
-        const el = document.getElementById('step' + i);
-        el.className = 'step-item';
-        if (i < step || (i === step && passed && step <= 4)) el.className += ' done';
-        else if (i === step && !passed) el.className += ' active';
-        else if (i === step + 1 && passed) el.className += ' active';
-      }
-    }
-
-    function renderScenario(scene) {
-      scenarioData = scene;
-      document.getElementById('scenarioTitle').textContent = scene.scenario.title;
-      document.getElementById('scenarioDesc').textContent = scene.scenario.description;
-      document.getElementById('metaRole').innerHTML = `\u{1F3AD} 你的角色：${scene.player.role}`;
-      document.getElementById('metaGoal').innerHTML = `\u{1F3AF} 目标：${scene.player.goal}`;
-
-      const chatArea = document.getElementById('chatArea');
-      chatArea.innerHTML = '';
-      addMessage(`（${scene.opening.scene_desc}）<br><br>${scene.opening.first_line}`, false);
-
-      document.getElementById('userInput').placeholder = stepPlaceholders[1];
-    }
-
-    function showCompletion() {
-      const chatArea = document.getElementById('chatArea');
-      const name = scenarioData ? scenarioData.character.name : '对方';
-      const div = document.createElement('div');
-      div.className = 'completion-banner';
-      div.innerHTML = `
-        <div class="completion-icon">\u{1F3C6}</div>
-        <h2>恭喜完成训练</h2>
-        <p>你成功运用了非暴力沟通四步法：<br>
-        <strong>观察</strong>（不评判）\u2192 <strong>感受</strong>（不指责）\u2192 <strong>需要</strong>（不隐藏）\u2192 <strong>请求</strong>（可执行）<br><br>
-        ${name}从最初的防备抗拒，到最后愿意敞开心扉。<br>
-        这就是非暴力沟通的力量。</p>
-        <button class="restart-btn" onclick="generateNewScenario()">开始新场景</button>
-      `;
-      chatArea.appendChild(div);
-      chatArea.scrollTop = chatArea.scrollHeight;
-      document.getElementById('inputArea').style.display = 'none';
-    }
-
-    function setInputAvailability(enabled) {
-      const input = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
-      if (!input || !sendBtn) return;
-      input.disabled = !enabled;
-      sendBtn.disabled = !enabled;
-      if (enabled) input.focus();
-    }
-
-    // ========================
-    // Core Flow
-    // ========================
-    function handleKey(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      setInputAvailability(false);
-
-      addMessage(text, true);
-      input.value = '';
-      addLoading();
-
-      try {
-        const result = await callAPI(text);
-        removeLoading();
-        addFeedback(result.pass, result.feedback, result.hint, result.emotion);
-        if (result.response) addMessage(result.response, false);
-
-        if (result.pass) {
-          updateSteps(currentStep, true);
-          if (currentStep >= 4) {
-            setInputAvailability(true);
-            showCompletion();
-            return;
-          }
-          currentStep++;
-          updateSteps(currentStep, false);
-          input.placeholder = stepPlaceholders[currentStep];
-        }
-      } catch (e) {
-        removeLoading();
-        addMessage('（系统出错，请重试）', false);
-      }
-
-      setInputAvailability(true);
-    }
-
-    async function generateNewScenario() {
-      currentStep = 1;
-      conversationHistory = [];
-      updateSteps(1, false);
-      document.getElementById('inputArea').style.display = 'flex';
-      renderScenario(getNextStaticScenario());
-    }
-
-    // ========================
-    // Initialization
-    // ========================
-    async function init() {
-      await loadConfig();
-      await loadStaticScenarios();
-      await verifyProviders();
-      updateAPIStatus();
-
-      document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('appContent').style.display = 'block';
-      renderScenario(getNextStaticScenario());
-    }
-
-    init();
-  </script>
 </body>
 </html>
